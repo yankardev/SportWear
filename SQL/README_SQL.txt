@@ -51,20 +51,9 @@ PrecioBase se interpreta como precio final mostrado al cliente (IGV incluido).
 Al confirmar la compra, el sistema separa internamente Subtotal e IGV sin
 incrementar el precio visto en el catálogo.
 
-CREDENCIALES DE DEMOSTRACIÓN
-----------------------------
-Administrador:
-Correo: admin@sportwear.com
-Clave: Admin123*
+## Acceso de demostración
 
-Ventas:
-Correo: JENNYFER.CHAVEZ@SPORTWEAR.COM
-Clave: 123456
+El sistema incluye perfiles de Administrador, Ventas, Producción y Cliente.
 
-Producción:
-Correo: FABIO.CADENAS@SPORTWEAR.COM
-Clave: 123456
-
-Cliente:
-Correo: renzo.morales@sportwear.com
-Clave: Cliente123*
+Por seguridad, las credenciales de acceso no se almacenan
+públicamente en este repositorio.
