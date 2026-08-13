@@ -1,0 +1,268 @@
+﻿@model SportWear.Web.ViewModels.ProductoFormularioViewModel
+
+@{
+    ViewData["Title"] = "Editar producto";
+    Layout = "_LayoutAdmin";
+}
+
+@section Styles {
+    <link rel="stylesheet"
+          href="~/css/admin-crud.css"
+          asp-append-version="true" />
+}
+
+<div class="form-card">
+
+    <div class="form-card-header">
+
+        <h2 class="form-card-title">
+            Editar producto
+        </h2>
+
+        <p class="form-card-description">
+            Actualiza la información comercial del producto seleccionado.
+        </p>
+
+    </div>
+
+    <div class="form-card-body">
+
+        <form asp-controller="Producto"
+              asp-action="Editar"
+              method="post">
+
+            @Html.AntiForgeryToken()
+
+            <div asp-validation-summary="ModelOnly"></div>
+
+            <input asp-for="Producto.ProductoId"
+                   type="hidden" />
+
+            <div class="form-grid">
+
+                <div class="form-group">
+
+                    <label asp-for="Producto.CategoriaId"
+                           class="form-label">
+
+                        Categoría
+                        <span class="form-required">*</span>
+
+                    </label>
+
+                    <select asp-for="Producto.CategoriaId"
+                            class="form-select-sport">
+
+                        <option value="">
+                            Seleccione una categoría
+                        </option>
+
+                        @foreach (var categoria in Model.Categorias)
+                        {
+                            <option value="@categoria.CategoriaId">
+                                @categoria.Nombre
+                            </option>
+                        }
+
+                    </select>
+
+                    <span asp-validation-for="Producto.CategoriaId"
+                          class="form-validation">
+                    </span>
+
+                </div>
+
+                <div class="form-group">
+
+                    <label asp-for="Producto.Nombre"
+                           class="form-label">
+
+                        Nombre
+                        <span class="form-required">*</span>
+
+                    </label>
+
+                    <input asp-for="Producto.Nombre"
+                           class="form-control-sport" />
+
+                    <span asp-validation-for="Producto.Nombre"
+                          class="form-validation">
+                    </span>
+
+                </div>
+
+                <div class="form-group">
+
+                    <label asp-for="Producto.PrecioBase"
+                           class="form-label">
+
+                        Precio base
+                        <span class="form-required">*</span>
+
+                    </label>
+
+                    <input asp-for="Producto.PrecioBase"
+                           class="form-control-sport"
+                           step="0.01" />
+
+                    <span asp-validation-for="Producto.PrecioBase"
+                          class="form-validation">
+                    </span>
+
+                </div>
+
+                <div class="form-group">
+
+                    <label asp-for="Producto.ImagenUrl"
+                           class="form-label">
+                        URL de imagen
+                    </label>
+
+                    <input asp-for="Producto.ImagenUrl"
+                           class="form-control-sport" />
+
+                    <span asp-validation-for="Producto.ImagenUrl"
+                          class="form-validation">
+                    </span>
+
+                </div>
+
+                <div class="form-group form-group-full">
+
+                    <label asp-for="Producto.Descripcion"
+                           class="form-label">
+                        Descripción
+                    </label>
+
+                    <textarea asp-for="Producto.Descripcion"
+                              class="form-textarea-sport">
+                    </textarea>
+
+                    <span asp-validation-for="Producto.Descripcion"
+                          class="form-validation">
+                    </span>
+
+                </div>
+
+
+                <div class="form-group" id="grupoStock">
+
+                    <label asp-for="Producto.Stock"
+                           class="form-label">
+                        Stock disponible
+                    </label>
+
+                    <input asp-for="Producto.Stock"
+                           class="form-control-sport"
+                           type="number"
+                           min="0"
+                           placeholder="0" />
+
+                    <span class="form-help">
+                        Solo aplica a productos de venta directa.
+                    </span>
+
+                    <span asp-validation-for="Producto.Stock"
+                          class="form-validation">
+                    </span>
+
+                </div>
+
+                <div class="form-group">
+
+                    <div class="switch-group">
+
+                        <input asp-for="Producto.Personalizable"
+                               class="switch-input" />
+
+                        <div class="switch-content">
+
+                            <strong>
+                                Producto personalizable
+                            </strong>
+
+                            <span>
+                                Permite seleccionar opciones de confección.
+                            </span>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <div class="form-group">
+
+                    <div class="switch-group">
+
+                        <input asp-for="Producto.Activo"
+                               class="switch-input" />
+
+                        <div class="switch-content">
+
+                            <strong>
+                                Producto activo
+                            </strong>
+
+                            <span>
+                                Estará disponible en el catálogo.
+                            </span>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <div class="form-actions">
+
+                <a asp-controller="Producto"
+                   asp-action="Index"
+                   class="button-secondary">
+
+                    <i class="bi bi-arrow-left"></i>
+                    Cancelar
+
+                </a>
+
+                <button type="submit"
+                        class="button-submit">
+
+                    <i class="bi bi-check-circle-fill"></i>
+                    Guardar cambios
+
+                </button>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+
+    <script>
+        const personalizable = document.getElementById("Producto_Personalizable");
+        const grupoStock = document.getElementById("grupoStock");
+        const stock = document.getElementById("Producto_Stock");
+
+        function actualizarStock() {
+            if (!personalizable || !grupoStock || !stock) return;
+
+            if (personalizable.checked) {
+                grupoStock.style.display = "none";
+                stock.value = 0;
+            } else {
+                grupoStock.style.display = "block";
+            }
+        }
+
+        personalizable?.addEventListener("change", actualizarStock);
+        actualizarStock();
+    </script>
+}

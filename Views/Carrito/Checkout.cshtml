@@ -1,0 +1,71 @@
+﻿@model SportWear.Web.ViewModels.CheckoutViewModel
+
+@{
+    ViewData["Title"] = "Confirmar compra";
+    Layout = "_LayoutCliente";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/tienda.css" asp-append-version="true" />
+}
+
+<section class="shop-page">
+    <div class="shop-heading">
+        <div>
+            <span>Último paso</span>
+            <h1>Confirmar compra</h1>
+            <p>Verifica los datos de entrega y confirma tu pedido de tienda.</p>
+        </div>
+    </div>
+
+    <form asp-action="Checkout" method="post" class="checkout-layout">
+        @Html.AntiForgeryToken()
+
+        <div class="checkout-card">
+            <h2>Datos de entrega</h2>
+            <div asp-validation-summary="ModelOnly" class="shop-validation"></div>
+
+            <div class="shop-form-group">
+                <label asp-for="Destinatario"></label>
+                <input asp-for="Destinatario" />
+                <span asp-validation-for="Destinatario"></span>
+            </div>
+
+            <div class="shop-form-group">
+                <label asp-for="Telefono"></label>
+                <input asp-for="Telefono" />
+                <span asp-validation-for="Telefono"></span>
+            </div>
+
+            <div class="shop-form-group">
+                <label asp-for="Direccion"></label>
+                <textarea asp-for="Direccion" rows="3"></textarea>
+                <span asp-validation-for="Direccion"></span>
+            </div>
+        </div>
+
+        <aside class="cart-summary">
+            <h2>Resumen de compra</h2>
+            @foreach (var item in Model.Carrito.Items)
+            {
+                <div class="checkout-line">
+                    <span>@item.Nombre · Talla @item.Talla · x @item.Cantidad</span>
+                    <strong>S/ @item.Subtotal.ToString("N2")</strong>
+                </div>
+            }
+            <div><span>Subtotal</span><strong>S/ @Model.Carrito.Subtotal.ToString("N2")</strong></div>
+            <div><span>IGV</span><strong>S/ @Model.Carrito.Igv.ToString("N2")</strong></div>
+            <div class="cart-total"><span>Total</span><strong>S/ @Model.Carrito.Total.ToString("N2")</strong></div>
+
+            <button type="submit" class="shop-button-primary shop-button-block">
+                <i class="bi bi-bag-check"></i>
+                Confirmar pedido
+            </button>
+            <p class="checkout-note">La demostración registra el pedido. No procesa pagos reales.</p>
+        </aside>
+    </form>
+</section>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

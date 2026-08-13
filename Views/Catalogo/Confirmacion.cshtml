@@ -1,0 +1,74 @@
+﻿@{
+    ViewData["Title"] = "Solicitud enviada";
+    Layout = "_LayoutCliente";
+}
+
+<section style="
+    width:min(700px,92%);
+    margin:80px auto;
+    text-align:center;
+    ">
+
+    <div style="
+        background:white;
+        padding:50px 30px;
+        border-radius:20px;
+        box-shadow:0 18px 45px rgba(15,23,42,.08);
+        ">
+
+        <i class="bi bi-check-circle-fill"
+           style="
+            font-size:70px;
+            color:#6d28d9;
+            ">
+        </i>
+
+        <h1 style="
+            margin:20px 0 12px;
+            color:#2e1065;
+            ">
+            Solicitud enviada
+        </h1>
+
+        <p style="
+            color:#64748b;
+            line-height:1.7;
+            ">
+            Hemos recibido tu solicitud de cotización.
+            Nuestro equipo revisará la información y
+            continuará con el proceso.
+        </p>
+
+        <div style="display:flex;justify-content:center;gap:12px;flex-wrap:wrap;margin-top:25px;">
+            <a asp-controller="ClientePortal"
+               asp-action="MiCuenta"
+               style="
+                display:inline-block;
+                padding:13px 20px;
+                background:#6d28d9;
+                color:white;
+                text-decoration:none;
+                border-radius:10px;
+                font-weight:700;
+                ">
+                Ver en Mi Cuenta
+            </a>
+
+            <a asp-controller="Catalogo"
+               asp-action="Personalizados"
+               style="
+                display:inline-block;
+                padding:13px 20px;
+                border:1px solid #6d28d9;
+                color:#6d28d9;
+                text-decoration:none;
+                border-radius:10px;
+                font-weight:700;
+                ">
+                Seguir viendo personalizados
+            </a>
+        </div>
+
+    </div>
+
+</section>

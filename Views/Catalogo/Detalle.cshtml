@@ -1,0 +1,221 @@
+﻿@model SportWear.Web.Models.Producto
+
+@{
+    ViewData["Title"] = "Detalle del producto";
+    Layout = "_LayoutCliente";
+    bool esPersonalizable = Model.Personalizable;
+    int? clienteId = Context.Session.GetInt32("ClienteId");
+    string returnUrl = Context.Request.Path.ToString() + Context.Request.QueryString.ToString();
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/catalogo-detalle.css" asp-append-version="true" />
+}
+
+<section class="product-detail-section">
+    <div class="product-detail-container">
+        <div class="product-detail-image">
+            @if (!string.IsNullOrWhiteSpace(Model.ImagenUrl))
+            {
+                <img src="@Model.ImagenUrl" alt="@Model.Nombre" />
+            }
+            else
+            {
+                <div class="detail-placeholder">
+                    <i class="bi bi-image"></i>
+                    <span>Imagen no disponible</span>
+                </div>
+            }
+        </div>
+
+        <div class="product-detail-content">
+            <span class="detail-category">@Model.NombreCategoria</span>
+            <h1>@Model.Nombre</h1>
+
+            <p class="detail-description">
+                @(string.IsNullOrWhiteSpace(Model.Descripcion)
+                    ? (esPersonalizable
+                        ? "Producto deportivo disponible para personalización."
+                        : "Producto deportivo disponible para venta directa.")
+                    : Model.Descripcion)
+            </p>
+
+            <div class="detail-price">
+                <span>@(esPersonalizable ? "Precio base desde" : "Precio de venta")</span>
+                <strong>S/ @Model.PrecioBase.ToString("N2")</strong>
+            </div>
+
+            <div class="detail-features">
+                @if (esPersonalizable)
+                {
+                    <div class="feature-item"><i class="bi bi-check-circle-fill"></i><span>Producto personalizable</span></div>
+                    <div class="feature-item"><i class="bi bi-check-circle-fill"></i><span>Disponible para pedidos por volumen</span></div>
+                    <div class="feature-item"><i class="bi bi-check-circle-fill"></i><span>Cotización según cantidad y acabado</span></div>
+                    <div class="feature-item"><i class="bi bi-check-circle-fill"></i><span>Selección de talla, color, material y estampado</span></div>
+                }
+                else
+                {
+                    <div class="feature-item"><i class="bi bi-check-circle-fill"></i><span>Producto de venta directa</span></div>
+                    <div class="feature-item"><i class="bi bi-check-circle-fill"></i><span>Precio fijo</span></div>
+                    <div class="feature-item"><i class="bi bi-box-seam-fill"></i><span>Stock disponible: <strong>@Model.Stock unidades</strong></span></div>
+                    <div class="feature-item"><i class="bi bi-truck"></i><span>Pedido de tienda con seguimiento</span></div>
+                }
+            </div>
+
+            @if (!esPersonalizable)
+            {
+                if (Model.Stock > 0)
+                {
+                    <form asp-controller="Carrito"
+                          asp-action="Agregar"
+                          method="post"
+                          class="detail-buy-form"
+                          id="formCompraDirecta">
+                        @Html.AntiForgeryToken()
+                        <input type="hidden" name="productoId" value="@Model.ProductoId" />
+                        <input type="hidden" name="returnUrl" value="@returnUrl" />
+                        <input type="hidden" name="talla" id="tallaSeleccionada" value="" />
+
+                        <div class="detail-size-group">
+                            <span class="detail-buy-label">Selecciona tu talla</span>
+                            <div class="detail-size-options" role="group" aria-label="Talla">
+                                @foreach (var talla in new[] { "S", "M", "L", "XL" })
+                                {
+                                    <button type="button"
+                                            class="size-option"
+                                            data-talla="@talla"
+                                            aria-pressed="false">
+                                        @talla
+                                    </button>
+                                }
+                            </div>
+                            <small class="detail-size-help">La talla es obligatoria para agregar la prenda al carrito.</small>
+                            <span class="detail-size-error" id="tallaError">Selecciona una talla.</span>
+                        </div>
+
+                        <div class="detail-purchase-controls">
+                            <div>
+                                <span class="detail-buy-label">Cantidad</span>
+                                <div class="quantity-stepper">
+                                    <button type="button" class="quantity-button" id="restarCantidad" aria-label="Restar cantidad">−</button>
+                                    <input id="cantidad"
+                                           name="cantidad"
+                                           type="number"
+                                           min="1"
+                                           max="@Model.Stock"
+                                           value="1"
+                                           class="detail-quantity"
+                                           readonly />
+                                    <button type="button" class="quantity-button" id="sumarCantidad" aria-label="Sumar cantidad">+</button>
+                                </div>
+                            </div>
+
+                            <button type="submit" class="button-quote detail-add-cart">
+                                <i class="bi bi-cart-plus"></i>
+                                Agregar al carrito
+                            </button>
+                        </div>
+                    </form>
+                }
+                else
+                {
+                    <div class="detail-out-stock">
+                        <i class="bi bi-exclamation-circle"></i>
+                        Producto temporalmente sin stock.
+                    </div>
+                }
+            }
+
+            <div class="detail-actions">
+                @if (esPersonalizable)
+                {
+                    <a asp-controller="Catalogo" asp-action="Personalizados" class="button-back">
+                        <i class="bi bi-arrow-left"></i>
+                        Volver a personalizados
+                    </a>
+                }
+                else
+                {
+                    <a asp-controller="Catalogo" asp-action="Index" class="button-back">
+                        <i class="bi bi-arrow-left"></i>
+                        Volver al catálogo
+                    </a>
+                }
+
+                @if (esPersonalizable)
+                {
+                    <a asp-controller="Catalogo"
+                       asp-action="Cotizar"
+                       asp-route-id="@Model.ProductoId"
+                       class="button-quote">
+                        Solicitar cotización
+                        <i class="bi bi-arrow-right"></i>
+                    </a>
+                }
+
+                @if (clienteId != null)
+                {
+                    <form asp-controller="Favorito" asp-action="Agregar" method="post" class="favorite-detail-form">
+                        @Html.AntiForgeryToken()
+                        <input type="hidden" name="productoId" value="@Model.ProductoId" />
+                        <input type="hidden" name="returnUrl" value="@returnUrl" />
+                        <button type="submit" class="button-favorite">
+                            <i class="bi bi-heart"></i>
+                            Guardar favorito
+                        </button>
+                    </form>
+                }
+            </div>
+        </div>
+    </div>
+</section>
+
+@section Scripts {
+    @if (!esPersonalizable && Model.Stock > 0)
+    {
+        <script>
+            document.addEventListener("DOMContentLoaded", function () {
+                const form = document.getElementById("formCompraDirecta");
+                const tallaInput = document.getElementById("tallaSeleccionada");
+                const tallaError = document.getElementById("tallaError");
+                const opcionesTalla = document.querySelectorAll(".size-option");
+                const cantidad = document.getElementById("cantidad");
+                const restar = document.getElementById("restarCantidad");
+                const sumar = document.getElementById("sumarCantidad");
+                const stockMaximo = @Model.Stock;
+
+                opcionesTalla.forEach(boton => {
+                    boton.addEventListener("click", function () {
+                        opcionesTalla.forEach(item => {
+                            item.classList.remove("selected");
+                            item.setAttribute("aria-pressed", "false");
+                        });
+
+                        this.classList.add("selected");
+                        this.setAttribute("aria-pressed", "true");
+                        tallaInput.value = this.dataset.talla;
+                        tallaError.style.display = "none";
+                    });
+                });
+
+                restar.addEventListener("click", function () {
+                    const actual = Number(cantidad.value) || 1;
+                    cantidad.value = Math.max(1, actual - 1);
+                });
+
+                sumar.addEventListener("click", function () {
+                    const actual = Number(cantidad.value) || 1;
+                    cantidad.value = Math.min(stockMaximo, actual + 1);
+                });
+
+                form.addEventListener("submit", function (event) {
+                    if (!tallaInput.value) {
+                        event.preventDefault();
+                        tallaError.style.display = "block";
+                        document.querySelector(".detail-size-options").scrollIntoView({ behavior: "smooth", block: "center" });
+                    }
+                });
+            });
+        </script>
+    }
+}

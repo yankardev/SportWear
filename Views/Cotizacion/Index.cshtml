@@ -1,0 +1,174 @@
+﻿@model List<SportWear.Web.Models.Cotizacion>
+
+@{
+    ViewData["Title"] = "Cotizaciones";
+    Layout = "_LayoutAdmin";
+
+    string? buscar = ViewBag.Buscar as string;
+}
+
+@section Styles {
+    <link rel="stylesheet"
+          href="~/css/admin-crud.css"
+          asp-append-version="true" />
+}
+
+<div class="crud-header">
+
+    <div>
+
+        <h2 class="crud-title">
+            Cotizaciones
+        </h2>
+
+        <p class="crud-description">
+            Administre todas las cotizaciones generadas.
+        </p>
+
+    </div>
+
+</div>
+
+<section class="crud-card">
+
+    <div class="crud-toolbar">
+
+        <form asp-action="Index"
+              method="get"
+              class="crud-search-form">
+
+            <div class="crud-search-wrapper">
+
+                <i class="bi bi-search crud-search-icon"></i>
+
+                <input type="text"
+                       name="buscar"
+                       value="@buscar"
+                       class="crud-search-input"
+                       placeholder="Buscar..." />
+
+            </div>
+
+            <button class="crud-search-button">
+
+                Buscar
+
+            </button>
+
+        </form>
+
+    </div>
+
+    <div class="crud-table-container">
+
+        <table class="crud-table">
+
+            <thead>
+
+                <tr>
+
+                    <th>Código</th>
+
+                    <th>Cliente</th>
+
+                    <th>Producto</th>
+
+                    <th>Cantidad</th>
+
+                    <th>Total</th>
+
+                    <th>Estado</th>
+
+                    <th>Acciones</th>
+
+                </tr>
+
+            </thead>
+
+            <tbody>
+
+                @foreach (var item in Model)
+                {
+                    <tr>
+
+                        <td>
+
+                            <strong>
+
+                                @item.Codigo
+
+                            </strong>
+
+                        </td>
+
+                        <td>
+
+                            @item.NombreCliente
+
+                        </td>
+
+                        <td>
+
+                            @item.NombreProducto
+
+                        </td>
+
+                        <td>
+
+                            @item.Cantidad
+
+                        </td>
+
+                        <td>
+
+                            <strong>
+
+                                S/ @item.Total.ToString("N2")
+
+                            </strong>
+
+                        </td>
+
+                        <td>
+
+                            @if (item.Estado == "EMITIDA")
+                            {
+                                <span class="badge-status badge-active">
+
+                                    Emitida
+
+                                </span>
+                            }
+                            else
+                            {
+                                <span class="badge-status badge-standard">
+
+                                    @item.Estado
+
+                                </span>
+                            }
+
+                        </td>
+
+                        <td>
+
+                            <a asp-action="Detalle"
+                               asp-route-id="@item.CotizacionId"
+                               class="action-button action-details">
+
+                                <i class="bi bi-eye-fill"></i>
+
+                            </a>
+
+                        </td>
+
+                    </tr>
+                }
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+</section>

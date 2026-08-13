@@ -1,0 +1,157 @@
+﻿@model List<SportWear.Web.Models.Categoria>
+
+@{
+    ViewData["Title"] = "Categorías";
+    Layout = "_LayoutAdmin";
+
+    string? buscar = ViewBag.Buscar as string;
+    int pagina = ViewBag.Pagina ?? 1;
+    int totalPaginas = ViewBag.TotalPaginas ?? 1;
+}
+
+@section Styles {
+    <link rel="stylesheet"
+          href="~/css/admin-crud.css"
+          asp-append-version="true" />
+}
+
+<div class="crud-header">
+
+    <div>
+
+        <h2 class="crud-title">
+            Gestión de categorías
+        </h2>
+
+        <p class="crud-description">
+            Administra las categorías del catálogo SportWear.
+        </p>
+
+    </div>
+
+    <a asp-action="Registrar"
+       class="crud-button-primary">
+
+        <i class="bi bi-plus-circle-fill"></i>
+
+        Nueva categoría
+
+    </a>
+
+</div>
+
+<section class="crud-card">
+
+    <div class="crud-toolbar">
+
+        <form method="get"
+              class="crud-search-form">
+
+            <div class="crud-search-wrapper">
+
+                <i class="bi bi-search crud-search-icon"></i>
+
+                <input type="text"
+                       name="buscar"
+                       value="@buscar"
+                       class="crud-search-input"
+                       placeholder="Buscar categoría..." />
+
+            </div>
+
+            <button class="crud-search-button">
+
+                Buscar
+
+            </button>
+
+        </form>
+
+    </div>
+
+    <div class="crud-table-container">
+
+        <table class="crud-table">
+
+            <thead>
+
+                <tr>
+
+                    <th>ID</th>
+
+                    <th>Nombre</th>
+
+                    <th>Descripción</th>
+
+                    <th>Estado</th>
+
+                    <th>Fecha</th>
+
+                    <th>Acciones</th>
+
+                </tr>
+
+            </thead>
+
+            <tbody>
+
+                @foreach (var item in Model)
+                {
+                    <tr>
+
+                        <td>@item.CategoriaId</td>
+
+                        <td>
+
+                            <strong>@item.Nombre</strong>
+
+                        </td>
+
+                        <td>
+
+                            @item.Descripcion
+
+                        </td>
+
+                        <td>
+
+                            @if (item.Activo)
+                            {
+                                <span class="badge-status badge-active">
+
+                                    Activo
+
+                                </span>
+                            }
+                            else
+                            {
+                                <span class="badge-status badge-inactive">
+                                    Inactivo
+                                </span>
+                            }
+
+                        </td>
+                        <td>
+
+                            @item.FechaRegistro.ToString("dd/MM/yyyy")
+
+                        </td>
+                        <td>
+                            <div class="action-group">
+                                <a asp-action="Editar" asp-route-id="@item.CategoriaId"  class="action-button action-edit">
+                                    <i class="bi bi-pencil-fill"></i>
+                                </a>
+                                <form asp-action="Eliminar" asp-route-id="@item.CategoriaId" method="post">
+                                    @Html.AntiForgeryToken()
+                                    <button class="action-button action-delete">
+                                        <i class="bi bi-trash-fill"></i>
+                                    </button>
+                                </form>
+                            </div>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</section>

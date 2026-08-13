@@ -1,0 +1,63 @@
+@model List<SportWear.Web.Models.Producto>
+
+@{
+    ViewData["Title"] = "Favoritos";
+    Layout = "_LayoutCliente";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/catalogo.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/tienda.css" asp-append-version="true" />
+}
+
+<section class="shop-page">
+    <div class="shop-heading">
+        <div>
+            <span>Tu selección</span>
+            <h1>Favoritos</h1>
+            <p>Guarda las prendas que quieras revisar o comprar más adelante.</p>
+        </div>
+    </div>
+
+    @if (!Model.Any())
+    {
+        <div class="shop-empty">
+            <i class="bi bi-heart"></i>
+            <h2>Aún no tienes favoritos</h2>
+            <a asp-controller="Catalogo" asp-action="Index" class="shop-button-primary">Explorar catálogo</a>
+        </div>
+    }
+    else
+    {
+        <div class="product-grid">
+            @foreach (var producto in Model)
+            {
+                <article class="product-card favorite-card">
+                    <div class="product-image">
+                        @if (!string.IsNullOrWhiteSpace(producto.ImagenUrl))
+                        {
+                            <img src="@producto.ImagenUrl" alt="@producto.Nombre" />
+                        }
+                        else
+                        {
+                            <div class="product-placeholder"><i class="bi bi-image"></i></div>
+                        }
+                        <span class="product-category">@producto.NombreCategoria</span>
+                    </div>
+                    <div class="product-content">
+                        <h3>@producto.Nombre</h3>
+                        <p>@(producto.Descripcion ?? "Producto deportivo SportWear.")</p>
+                        <div class="favorite-actions">
+                            <a asp-controller="Catalogo" asp-action="Detalle" asp-route-id="@producto.ProductoId" class="product-button">Ver producto</a>
+                            <form asp-action="Eliminar" method="post">
+                                @Html.AntiForgeryToken()
+                                <input type="hidden" name="productoId" value="@producto.ProductoId" />
+                                <button type="submit" class="favorite-remove"><i class="bi bi-heartbreak"></i></button>
+                            </form>
+                        </div>
+                    </div>
+                </article>
+            }
+        </div>
+    }
+</section>

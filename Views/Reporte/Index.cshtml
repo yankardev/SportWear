@@ -1,0 +1,287 @@
+﻿@model SportWear.Web.Models.ReporteResumen
+
+@{
+    ViewData["Title"] = "Reportes";
+    Layout = "_LayoutAdmin";
+
+    var pedidosReporte = ViewBag.PedidosReporte as List<SportWear.Web.Models.Pedido>
+        ?? new List<SportWear.Web.Models.Pedido>();
+
+    var estados = ViewBag.Estados as List<SportWear.Web.Models.EstadoPedido>
+        ?? new List<SportWear.Web.Models.EstadoPedido>();
+
+    string estadoSeleccionado = ViewBag.EstadoSeleccionado as string ?? string.Empty;
+    string desde = ViewBag.Desde as string ?? string.Empty;
+    string hasta = ViewBag.Hasta as string ?? string.Empty;
+    int pagina = ViewBag.Pagina ?? 1;
+    int totalPaginas = ViewBag.TotalPaginas ?? 1;
+    int totalRegistros = ViewBag.TotalRegistros ?? 0;
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/reportes.css" asp-append-version="true" />
+}
+
+<section class="report-header">
+    <div>
+        <span class="report-badge">
+            <i class="bi bi-bar-chart-fill"></i>
+            Resumen comercial
+        </span>
+        <h2>Reportes de SportWear</h2>
+        <p>Consulta los principales resultados de productos, clientes, cotizaciones y pedidos.</p>
+    </div>
+    <button type="button" class="report-print" onclick="window.print()">
+        <i class="bi bi-printer-fill"></i>
+        Imprimir reporte
+    </button>
+</section>
+
+<section class="report-stats">
+    <article class="report-stat">
+        <span>Ventas registradas</span>
+        <strong>S/ @Model.TotalVentas.ToString("N2")</strong>
+        <small>@Model.TotalPedidos pedidos</small>
+    </article>
+    <article class="report-stat">
+        <span>Pedidos pendientes</span>
+        <strong>@Model.PedidosPendientes</strong>
+        <small>Requieren seguimiento</small>
+    </article>
+    <article class="report-stat">
+        <span>Cotizaciones</span>
+        <strong>@Model.TotalCotizaciones</strong>
+        <small>@Model.TotalSolicitudes solicitudes</small>
+    </article>
+    <article class="report-stat">
+        <span>Clientes activos</span>
+        <strong>@Model.TotalClientes</strong>
+        <small>@Model.TotalProductos productos activos</small>
+    </article>
+</section>
+
+
+<section class="report-filter-card">
+    <div class="report-filter-heading">
+        <div>
+            <span class="report-badge">
+                <i class="bi bi-funnel-fill"></i>
+                Reporte detallado
+            </span>
+            <h3>Pedidos por estado y fecha</h3>
+            <p>Filtra los pedidos registrados y navega por los resultados.</p>
+        </div>
+        <strong>@totalRegistros resultado(s)</strong>
+    </div>
+
+    <form method="get" asp-controller="Reporte" asp-action="Index" class="report-filters">
+        <div class="report-filter-field">
+            <label for="estado">Estado</label>
+            <select id="estado" name="estado">
+                <option value="">Todos los estados</option>
+                @foreach (var item in estados)
+                {
+                    if (item.Nombre == estadoSeleccionado)
+                    {
+                        <option value="@item.Nombre" selected>@item.Nombre</option>
+                    }
+                    else
+                    {
+                        <option value="@item.Nombre">@item.Nombre</option>
+                    }
+                }
+            </select>
+        </div>
+
+        <div class="report-filter-field">
+            <label for="desde">Desde</label>
+            <input id="desde" name="desde" type="date" value="@desde" />
+        </div>
+
+        <div class="report-filter-field">
+            <label for="hasta">Hasta</label>
+            <input id="hasta" name="hasta" type="date" value="@hasta" />
+        </div>
+
+        <div class="report-filter-actions">
+            <button type="submit" class="report-filter-button">
+                <i class="bi bi-search"></i>
+                Filtrar
+            </button>
+
+            <a asp-controller="Reporte" asp-action="Index" class="report-clear-button">
+                Limpiar
+            </a>
+        </div>
+    </form>
+
+    <div class="report-table-wrap">
+        <table class="report-table">
+            <thead>
+                <tr>
+                    <th>Código</th>
+                    <th>Cliente</th>
+                    <th>Producto</th>
+                    <th>Fecha</th>
+                    <th>Estado</th>
+                    <th>Total</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (pedidosReporte.Count == 0)
+                {
+                    <tr>
+                        <td colspan="6" class="report-empty">
+                            No hay pedidos para los filtros seleccionados.
+                        </td>
+                    </tr>
+                }
+                else
+                {
+                    @foreach (var pedido in pedidosReporte)
+                    {
+                        <tr>
+                            <td><strong>@pedido.Codigo</strong></td>
+                            <td>@pedido.NombreCliente</td>
+                            <td>@pedido.NombreProducto</td>
+                            <td>@pedido.FechaPedido.ToString("dd/MM/yyyy")</td>
+                            <td><span class="report-status">@pedido.NombreEstado</span></td>
+                            <td>S/ @pedido.Total.ToString("N2")</td>
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table>
+    </div>
+
+    @if (totalPaginas > 1)
+    {
+        <nav class="report-pagination" aria-label="Paginación del reporte">
+            @for (int i = 1; i <= totalPaginas; i++)
+            {
+                <a asp-controller="Reporte"
+                   asp-action="Index"
+                   asp-route-estado="@estadoSeleccionado"
+                   asp-route-desde="@desde"
+                   asp-route-hasta="@hasta"
+                   asp-route-pagina="@i"
+                   class="@(i == pagina ? "active" : "")">
+                    @i
+                </a>
+            }
+        </nav>
+    }
+</section>
+
+<section class="report-grid">
+    <article class="report-card">
+        <header>
+            <div>
+                <h3>Pedidos por estado</h3>
+                <p>Distribución y monto acumulado.</p>
+            </div>
+            <i class="bi bi-box-seam-fill"></i>
+        </header>
+
+        <div class="report-table-wrap">
+            <table class="report-table">
+                <thead>
+                    <tr>
+                        <th>Estado</th>
+                        <th>Cantidad</th>
+                        <th>Total</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (Model.PedidosPorEstado.Count == 0)
+                    {
+                        <tr><td colspan="3" class="report-empty">Todavía no hay pedidos registrados.</td></tr>
+                    }
+                    else
+                    {
+                        @foreach (var item in Model.PedidosPorEstado)
+                        {
+                            <tr>
+                                <td><span class="report-status">@item.Estado</span></td>
+                                <td>@item.Cantidad</td>
+                                <td>S/ @item.Total.ToString("N2")</td>
+                            </tr>
+                        }
+                    }
+                </tbody>
+            </table>
+        </div>
+    </article>
+
+    <article class="report-card">
+        <header>
+            <div>
+                <h3>Productos más solicitados</h3>
+                <p>Top 5 por cantidad de solicitudes.</p>
+            </div>
+            <i class="bi bi-trophy-fill"></i>
+        </header>
+
+        <div class="report-ranking">
+            @if (Model.ProductosMasSolicitados.Count == 0)
+            {
+                <p class="report-empty">Todavía no hay solicitudes registradas.</p>
+            }
+            else
+            {
+                var posicion = 1;
+                @foreach (var item in Model.ProductosMasSolicitados)
+                {
+                    <div class="ranking-item">
+                        <span class="ranking-number">@posicion</span>
+                        <div>
+                            <strong>@item.Producto</strong>
+                            <small>@item.TotalSolicitudes solicitudes</small>
+                        </div>
+                        <b>@item.TotalUnidades unid.</b>
+                    </div>
+                    posicion++;
+                }
+            }
+        </div>
+    </article>
+
+    <article class="report-card report-card-wide">
+        <header>
+            <div>
+                <h3>Clientes con más solicitudes</h3>
+                <p>Actividad y valor cotizado acumulado.</p>
+            </div>
+            <i class="bi bi-people-fill"></i>
+        </header>
+
+        <div class="report-table-wrap">
+            <table class="report-table">
+                <thead>
+                    <tr>
+                        <th>Cliente</th>
+                        <th>Solicitudes</th>
+                        <th>Total cotizado</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (Model.ClientesConMasSolicitudes.Count == 0)
+                    {
+                        <tr><td colspan="3" class="report-empty">Todavía no hay información para mostrar.</td></tr>
+                    }
+                    else
+                    {
+                        @foreach (var item in Model.ClientesConMasSolicitudes)
+                        {
+                            <tr>
+                                <td><strong>@item.Cliente</strong></td>
+                                <td>@item.TotalSolicitudes</td>
+                                <td>S/ @item.TotalCotizado.ToString("N2")</td>
+                            </tr>
+                        }
+                    }
+                </tbody>
+            </table>
+        </div>
+    </article>
+</section>

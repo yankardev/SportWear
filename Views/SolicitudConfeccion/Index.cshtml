@@ -1,0 +1,203 @@
+﻿@model List<SportWear.Web.Models.SolicitudConfeccion>
+
+@{
+    ViewData["Title"] = "Solicitudes de confección";
+    Layout = "_LayoutAdmin";
+
+    string? buscar = ViewBag.Buscar as string;
+    string rolUsuario = Context.Session.GetString("Rol") ?? "";
+    bool puedeRegistrar = rolUsuario == "ADMINISTRADOR" || rolUsuario == "VENTAS";
+}
+
+@section Styles { <link rel="stylesheet" href="~/css/admin-crud.css"  asp-append-version="true" />}
+<div class="crud-header">
+    <div>
+        <h2 class="crud-title">
+            Solicitudes de confección
+        </h2>
+        <p class="crud-description">
+            Consulta y administra las solicitudes personalizadas registradas.
+        </p>
+    </div>
+
+    @if (puedeRegistrar)
+    {
+        <a asp-action="Registrar" class="crud-button-primary">
+            <i class="bi bi-plus-circle-fill"></i>
+            Nueva solicitud
+        </a>
+    }
+</div>
+<section class="crud-card">
+    <div class="crud-toolbar">
+        <form asp-action="Index"  method="get" class="crud-search-form">
+            <div class="crud-search-wrapper">
+                <i class="bi bi-search crud-search-icon"></i>
+                <input type="text"
+                       name="buscar"
+                       value="@buscar"
+                       class="crud-search-input"
+                       placeholder="Buscar cliente, producto o estado..." />
+
+            </div>
+            <button type="submit"
+                    class="crud-search-button">
+                Buscar
+            </button>
+
+        </form>
+
+        @if (!string.IsNullOrWhiteSpace(buscar))
+        {
+            <a asp-action="Index"
+               class="crud-clear-link">
+
+                <i class="bi bi-x-circle"></i>
+                Limpiar
+
+            </a>
+        }
+
+    </div>
+
+    @if (Model.Count > 0)
+    {
+        <div class="crud-table-container">
+
+            <table class="crud-table">
+
+                <thead>
+                    <tr>
+                        <th>Código</th>
+                        <th>Cliente</th>
+                        <th>Producto</th>
+                        <th>Cantidad</th>
+                        <th>Personalización</th>
+                        <th>Estado</th>
+                        <th>Fecha</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+
+                    @foreach (var solicitud in Model)
+                    {
+                        <tr>
+
+                            <td>
+                                <strong>
+                                    SOL-@solicitud.SolicitudId.ToString("D4")
+                                </strong>
+                            </td>
+
+                            <td>
+                                @solicitud.NombreCliente
+                            </td>
+
+                            <td>
+                                <strong>
+                                    @solicitud.NombreProducto
+                                </strong>
+                            </td>
+
+                            <td>
+                                @solicitud.Cantidad
+                            </td>
+
+                            <td>
+                                <span class="badge-status badge-custom">
+                                    @solicitud.Talla · @solicitud.Color
+                                </span>
+                            </td>
+
+                            <td>
+
+                                @switch (solicitud.Estado)
+                                {
+                                    case "PENDIENTE":
+                                        <span class="badge-status badge-standard">
+                                            <i class="bi bi-clock-fill"></i>
+                                            Pendiente
+                                        </span>
+                                        break;
+
+                                    case "COTIZADA":
+                                        <span class="badge-status badge-custom">
+                                            <i class="bi bi-calculator-fill"></i>
+                                            Cotizada
+                                        </span>
+                                        break;
+
+                                    case "APROBADA":
+                                        <span class="badge-status badge-active">
+                                            <i class="bi bi-check-circle-fill"></i>
+                                            Aprobada
+                                        </span>
+                                        break;
+
+                                    case "RECHAZADA":
+                                    case "CANCELADA":
+                                        <span class="badge-status badge-inactive">
+                                            <i class="bi bi-x-circle-fill"></i>
+                                            @solicitud.Estado
+                                        </span>
+                                        break;
+
+                                    default:
+                                        <span class="badge-status badge-standard">
+                                            @solicitud.Estado
+                                        </span>
+                                        break;
+                                }
+
+                            </td>
+
+                            <td>
+                                @solicitud.FechaRegistro.ToString("dd/MM/yyyy")
+                            </td>
+
+                            <td>
+
+                                <div class="action-group">
+
+                                    <a asp-action="Detalle"
+                                       asp-route-id="@solicitud.SolicitudId"
+                                       class="action-button action-details"
+                                       title="Ver detalle">
+
+                                        <i class="bi bi-eye-fill"></i>
+
+                                    </a>
+
+                                </div>
+
+                            </td>
+
+                        </tr>
+                    }
+
+                </tbody>
+
+            </table>
+
+        </div>
+    }
+    else
+    {
+        <div class="crud-empty">
+
+            <div class="crud-empty-icon">
+                <i class="bi bi-scissors"></i>
+            </div>
+
+            <h3>No hay solicitudes registradas</h3>
+
+            <p>
+                Registra una nueva solicitud de confección personalizada.
+            </p>
+
+        </div>
+    }
+
+</section>

@@ -1,0 +1,73 @@
+﻿@model SportWear.Web.Models.Venta
+
+@{
+    ViewData["Title"] = "Detalle de venta";
+    Layout = "_LayoutAdmin";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/admin-crud.css" asp-append-version="true" />
+}
+
+<div class="detail-card">
+    <div class="detail-header">
+        <div>
+            <h2 class="detail-title">@Model.Codigo</h2>
+            <p class="detail-subtitle">Compra de tienda registrada el @Model.FechaVenta.ToString("dd/MM/yyyy HH:mm")</p>
+        </div>
+        <span class="badge-status badge-standard">@Model.Estado</span>
+    </div>
+
+    <div class="detail-body">
+        <div class="detail-list" style="width:100%;">
+            <div class="detail-item"><span class="detail-label">Cliente</span><span class="detail-value">@Model.NombreCliente</span></div>
+            <div class="detail-item"><span class="detail-label">Destinatario</span><span class="detail-value">@Model.Destinatario</span></div>
+            <div class="detail-item"><span class="detail-label">Teléfono</span><span class="detail-value">@Model.Telefono</span></div>
+            <div class="detail-item"><span class="detail-label">Dirección</span><span class="detail-value">@Model.Direccion</span></div>
+            <div class="detail-item"><span class="detail-label">Subtotal sin IGV</span><span class="detail-value">S/ @Model.Subtotal.ToString("N2")</span></div>
+            <div class="detail-item"><span class="detail-label">IGV incluido</span><span class="detail-value">S/ @Model.Igv.ToString("N2")</span></div>
+            <div class="detail-item"><span class="detail-label">Total de venta</span><span class="detail-value price-text">S/ @Model.Total.ToString("N2")</span></div>
+        </div>
+    </div>
+
+    <div class="crud-table-container" style="margin:0 24px 24px;">
+        <table class="crud-table">
+            <thead><tr><th>Producto</th><th>Talla</th><th>Cantidad</th><th>Precio</th><th>Importe</th></tr></thead>
+            <tbody>
+                @foreach (var item in Model.Detalles)
+                {
+                    <tr>
+                        <td>@item.NombreProducto</td>
+                        <td>@(string.IsNullOrWhiteSpace(item.Talla) ? "No registrada" : item.Talla)</td>
+                        <td>@item.Cantidad</td>
+                        <td>S/ @item.PrecioUnitario.ToString("N2")</td>
+                        <td><strong>S/ @item.Subtotal.ToString("N2")</strong></td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+    <div class="detail-actions" style="justify-content:space-between;">
+        <a asp-action="Index" class="button-secondary"><i class="bi bi-arrow-left"></i> Volver</a>
+
+        <form asp-action="ActualizarEstado" method="post" style="display:flex;gap:10px;align-items:center;">
+            @Html.AntiForgeryToken()
+            <input type="hidden" name="ventaId" value="@Model.VentaId" />
+            <select name="estado" class="form-select-sport">
+                @foreach (var estado in new[] { "REGISTRADA", "PREPARANDO", "LISTA", "ENTREGADA" })
+                {
+                    if (Model.Estado == estado)
+                    {
+                        <option value="@estado" selected>@estado</option>
+                    }
+                    else
+                    {
+                        <option value="@estado">@estado</option>
+                    }
+                }
+            </select>
+            <button type="submit" class="button-submit">Actualizar estado</button>
+        </form>
+    </div>
+</div>

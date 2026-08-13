@@ -1,0 +1,85 @@
+@model List<SportWear.Web.Models.Venta>
+
+@{
+    ViewData["Title"] = "Ventas directas";
+    Layout = "_LayoutAdmin";
+    string? buscar = ViewBag.Buscar as string;
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/admin-crud.css" asp-append-version="true" />
+}
+
+<div class="crud-header">
+    <div>
+        <h2 class="crud-title">Ventas directas</h2>
+        <p class="crud-description">Pedidos generados desde el carrito de la tienda SportWear.</p>
+    </div>
+</div>
+
+<section class="crud-card">
+    <div class="crud-toolbar">
+        <form asp-action="Index" method="get" class="crud-search-form">
+            <div class="crud-search-wrapper">
+                <i class="bi bi-search crud-search-icon"></i>
+                <input type="text" name="buscar" value="@buscar" class="crud-search-input" placeholder="Buscar por código o cliente..." />
+            </div>
+            <button type="submit" class="crud-search-button">Buscar</button>
+        </form>
+        @if (!string.IsNullOrWhiteSpace(buscar))
+        {
+            <a asp-action="Index" class="crud-clear-link">Limpiar búsqueda</a>
+        }
+    </div>
+
+    @if (Model.Any())
+    {
+        <div class="crud-table-container">
+            <table class="crud-table">
+                <thead>
+                    <tr>
+                        <th>Código</th>
+                        <th>Cliente</th>
+                        <th>Fecha</th>
+                        <th>Total</th>
+                        <th>Estado</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var venta in Model)
+                    {
+                        string clase = venta.Estado switch
+                        {
+                            "REGISTRADA" => "badge-aprobado",
+                            "PREPARANDO" => "badge-confeccion",
+                            "LISTA" => "badge-listo",
+                            "ENTREGADA" => "badge-entregado",
+                            _ => "badge-standard"
+                        };
+                        <tr>
+                            <td><strong>@venta.Codigo</strong></td>
+                            <td>@venta.NombreCliente</td>
+                            <td>@venta.FechaVenta.ToString("dd/MM/yyyy HH:mm")</td>
+                            <td><strong>S/ @venta.Total.ToString("N2")</strong></td>
+                            <td><span class="badge-status @clase">@venta.Estado</span></td>
+                            <td>
+                                <a asp-action="Detalle" asp-route-id="@venta.VentaId" class="action-button action-details" title="Ver detalle">
+                                    <i class="bi bi-eye-fill"></i>
+                                </a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+    else
+    {
+        <div class="crud-empty">
+            <div class="crud-empty-icon"><i class="bi bi-cart-x"></i></div>
+            <h3>No hay ventas directas</h3>
+            <p>Las compras confirmadas desde el carrito aparecerán aquí.</p>
+        </div>
+    }
+</section>

@@ -1,0 +1,128 @@
+@model SportWear.Web.ViewModels.PedidoClienteViewModel
+
+@{
+    ViewData["Title"] = "Iniciar pedido";
+    Layout = "_LayoutCliente";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/pedido-cliente.css" asp-append-version="true" />
+}
+
+<section class="client-order-section">
+    <div class="client-order-container">
+        <div class="client-order-heading">
+            <span>Cotización aprobada por el cliente</span>
+            <h1>Iniciar pedido personalizado</h1>
+            <p>
+                Revisa la cotización y completa los datos de entrega.
+                Al confirmar, el pedido iniciará en estado APROBADO.
+            </p>
+        </div>
+
+        <div class="client-order-summary">
+            <div>
+                <small>Cotización</small>
+                <strong>@Model.CodigoCotizacion</strong>
+            </div>
+            <div>
+                <small>Producto</small>
+                <strong>@Model.NombreProducto</strong>
+            </div>
+            <div>
+                <small>Cantidad</small>
+                <strong>@Model.Cantidad prendas</strong>
+            </div>
+            <div>
+                <small>Total</small>
+                <strong>S/ @Model.Total.ToString("N2")</strong>
+            </div>
+        </div>
+
+        <div class="client-order-notice">
+            <i class="bi bi-info-circle-fill"></i>
+            <div>
+                <strong>¿La cotización te convence?</strong>
+                <p>
+                    Al iniciar el pedido confirmas la cotización y SportWear
+                    comenzará el proceso de confección.
+                </p>
+            </div>
+        </div>
+
+        <form asp-action="IniciarPedido" method="post" class="client-order-form">
+            @Html.AntiForgeryToken()
+
+            <input asp-for="CotizacionId" type="hidden" />
+            <input asp-for="CodigoCotizacion" type="hidden" />
+            <input asp-for="NombreProducto" type="hidden" />
+            <input asp-for="Cantidad" type="hidden" />
+            <input asp-for="Total" type="hidden" />
+
+            <div asp-validation-summary="ModelOnly" class="client-validation-summary"></div>
+
+            <div class="client-order-grid">
+                <div class="client-field">
+                    <label asp-for="Destinatario">Destinatario</label>
+                    <input asp-for="Destinatario" />
+                    <span asp-validation-for="Destinatario"></span>
+                </div>
+
+                <div class="client-field">
+                    <label asp-for="TelefonoEntrega">Teléfono de entrega</label>
+                    <input asp-for="TelefonoEntrega" />
+                    <span asp-validation-for="TelefonoEntrega"></span>
+                </div>
+
+                <div class="client-field client-field-full">
+                    <label asp-for="DireccionEntrega">Dirección de entrega</label>
+                    <input asp-for="DireccionEntrega" placeholder="Ej. Av. América Norte 123" />
+                    <span asp-validation-for="DireccionEntrega"></span>
+                </div>
+
+                <div class="client-field">
+                    <label asp-for="DistritoEntrega">Distrito</label>
+                    <input asp-for="DistritoEntrega" placeholder="Ej. Trujillo" />
+                    <span asp-validation-for="DistritoEntrega"></span>
+                </div>
+
+                <div class="client-field">
+                    <label asp-for="ReferenciaEntrega">Referencia</label>
+                    <input asp-for="ReferenciaEntrega" placeholder="Ej. Frente al parque" />
+                    <span asp-validation-for="ReferenciaEntrega"></span>
+                </div>
+
+                <div class="client-field client-field-full">
+                    <label asp-for="Observaciones">Observaciones</label>
+                    <textarea asp-for="Observaciones" rows="4"
+                              placeholder="Indicaciones adicionales para el pedido o la entrega."></textarea>
+                    <span asp-validation-for="Observaciones"></span>
+                </div>
+            </div>
+
+            <div class="client-order-actions">
+                <a asp-action="DescargarCotizacion"
+                   asp-route-id="@Model.CotizacionId"
+                   class="client-button-secondary">
+                    <i class="bi bi-file-earmark-pdf"></i>
+                    Descargar cotización
+                </a>
+
+                <a asp-action="MiCuenta"
+                   asp-fragment="cotizaciones"
+                   class="client-button-back">
+                    Volver
+                </a>
+
+                <button type="submit" class="client-button-primary">
+                    <i class="bi bi-check-circle-fill"></i>
+                    Aprobar e iniciar pedido
+                </button>
+            </div>
+        </form>
+    </div>
+</section>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

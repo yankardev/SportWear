@@ -1,0 +1,209 @@
+﻿@model SportWear.Web.Models.Cliente
+
+@{
+    ViewData["Title"] = "Detalle del cliente";
+    Layout = "_LayoutAdmin";
+}
+
+@section Styles {
+    <link rel="stylesheet"
+          href="~/css/admin-crud.css"
+          asp-append-version="true" />
+}
+
+<div class="client-detail-card">
+
+    <div class="client-detail-header">
+
+        <div>
+            <span class="client-detail-label">
+                Cliente registrado
+            </span>
+
+            <h2 class="client-detail-title">
+                @Model.Nombres @Model.Apellidos
+            </h2>
+
+            <p class="client-detail-subtitle">
+                Información general y datos de contacto.
+            </p>
+        </div>
+
+        @if (Model.Activo)
+        {
+            <span class="badge-status badge-active">
+                <i class="bi bi-check-circle-fill"></i>
+                Activo
+            </span>
+        }
+        else
+        {
+            <span class="badge-status badge-inactive">
+                <i class="bi bi-x-circle-fill"></i>
+                Inactivo
+            </span>
+        }
+
+    </div>
+
+    <div class="client-detail-body">
+
+        <div class="client-avatar-panel">
+
+            <div class="client-avatar-large">
+                @(Model.Nombres.Substring(0, 1).ToUpper())
+                @(Model.Apellidos.Substring(0, 1).ToUpper())
+            </div>
+
+            <h3>
+                @Model.Nombres @Model.Apellidos
+            </h3>
+
+            <span>
+                Cliente N.° @Model.ClienteId
+            </span>
+
+        </div>
+
+        <div class="client-detail-grid">
+
+            <div class="client-info-item">
+
+                <div class="client-info-icon">
+                    <i class="bi bi-person-vcard-fill"></i>
+                </div>
+
+                <div>
+                    <span class="client-info-label">
+                        Documento
+                    </span>
+
+                    <strong>
+                        @Model.Documento
+                    </strong>
+                </div>
+
+            </div>
+
+            <div class="client-info-item">
+
+                <div class="client-info-icon">
+                    <i class="bi bi-telephone-fill"></i>
+                </div>
+
+                <div>
+                    <span class="client-info-label">
+                        Teléfono
+                    </span>
+
+                    <strong>
+                        @(string.IsNullOrWhiteSpace(Model.Telefono)
+                            ? "No registrado"
+                            : Model.Telefono)
+                    </strong>
+                </div>
+
+            </div>
+
+            <div class="client-info-item client-info-wide">
+
+                <div class="client-info-icon">
+                    <i class="bi bi-envelope-fill"></i>
+                </div>
+
+                <div>
+                    <span class="client-info-label">
+                        Correo electrónico
+                    </span>
+
+                    <strong class="client-info-wrap">
+                        @(string.IsNullOrWhiteSpace(Model.Correo)
+                            ? "No registrado"
+                            : Model.Correo)
+                    </strong>
+                </div>
+
+            </div>
+
+            <div class="client-info-item client-info-wide">
+
+                <div class="client-info-icon">
+                    <i class="bi bi-geo-alt-fill"></i>
+                </div>
+
+                <div>
+                    <span class="client-info-label">
+                        Dirección
+                    </span>
+
+                    <strong>
+                        @(string.IsNullOrWhiteSpace(Model.Direccion)
+                            ? "No registrada"
+                            : Model.Direccion)
+                    </strong>
+                </div>
+
+            </div>
+
+            <div class="client-info-item">
+
+                <div class="client-info-icon">
+                    <i class="bi bi-calendar-check-fill"></i>
+                </div>
+
+                <div>
+                    <span class="client-info-label">
+                        Fecha de registro
+                    </span>
+
+                    <strong>
+                        @Model.FechaRegistro.ToString("dd/MM/yyyy")
+                    </strong>
+                </div>
+
+            </div>
+
+            <div class="client-info-item">
+
+                <div class="client-info-icon">
+                    <i class="bi bi-clock-fill"></i>
+                </div>
+
+                <div>
+                    <span class="client-info-label">
+                        Hora de registro
+                    </span>
+
+                    <strong>
+                        @Model.FechaRegistro.ToString("HH:mm")
+                    </strong>
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="client-detail-actions">
+
+        <a asp-action="Index"
+           class="button-secondary">
+
+            <i class="bi bi-arrow-left"></i>
+            Volver al listado
+
+        </a>
+
+        <a asp-action="Editar"
+           asp-route-id="@Model.ClienteId"
+           class="button-submit">
+
+            <i class="bi bi-pencil-fill"></i>
+            Editar cliente
+
+        </a>
+
+    </div>
+
+</div>

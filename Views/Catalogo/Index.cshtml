@@ -1,0 +1,587 @@
+﻿@model IEnumerable<SportWear.Web.Models.Producto>
+
+@{
+    bool esPersonalizable =
+        ViewBag.EsPersonalizable is bool valor && valor;
+
+    ViewData["Title"] = esPersonalizable
+        ? "Personalizados"
+        : "Catálogo";
+
+    Layout = "_LayoutCliente";
+
+    string tituloHero = esPersonalizable
+        ? "Diseña prendas deportivas para tu equipo"
+        : "Encuentra ropa deportiva lista para ti";
+
+    string descripcionHero = esPersonalizable
+        ? "Explora nuestros modelos, selecciona tus preferencias y solicita una cotización en línea."
+        : "Descubre prendas deportivas listas para comprar con precios definidos.";
+
+    string etiquetaHero = esPersonalizable
+        ? "Confección deportiva personalizada"
+        : "Tienda deportiva SportWear";
+
+    string tituloProductos = esPersonalizable
+        ? "Modelos personalizables"
+        : "Productos de venta directa";
+
+    string descripcionProductos = esPersonalizable
+        ? "Selecciona un producto para consultar sus características y solicitar una cotización."
+        : "Selecciona una prenda para consultar sus características y precio de venta.";
+
+    string mensajeVacio = esPersonalizable
+        ? "No hay productos personalizables disponibles."
+        : "No hay productos de venta directa disponibles.";
+
+    string textoPrecio = esPersonalizable
+        ? "Desde"
+        : "Precio";
+}
+
+@section Styles {
+    <link rel="stylesheet"
+          href="~/css/catalogo.css"
+          asp-append-version="true" />
+}
+
+
+<!-- =====================================================
+     HERO
+===================================================== -->
+<section class="hero">
+
+    <div class="hero-content">
+
+        <span class="hero-tag">
+            @etiquetaHero
+        </span>
+
+        <h1>
+            @tituloHero
+        </h1>
+
+        <p>
+            @descripcionHero
+        </p>
+
+        <div class="hero-actions">
+
+            <a href="#productos"
+               class="hero-button">
+
+                <i class="bi bi-bag"></i>
+
+                Ver modelos
+
+            </a>
+
+
+            <a asp-controller="Auth"
+               asp-action="Login"
+               class="hero-admin-button">
+
+                <i class="bi bi-shield-lock"></i>
+
+                Acceso administrativo
+
+            </a>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- =====================================================
+     CATÁLOGO
+===================================================== -->
+<section class="catalog-section"
+         id="productos">
+
+    <div class="catalog-header">
+
+        <div class="section-heading">
+
+            <span>
+                Nuestros productos
+            </span>
+
+            <h2>
+                @tituloProductos
+            </h2>
+
+            <p>
+                @descripcionProductos
+            </p>
+
+        </div>
+
+
+        <!-- BUSCADOR AJAX -->
+        <div class="catalog-search">
+
+            <i class="bi bi-search"></i>
+
+            <input type="text"
+                   id="buscarProducto"
+                   placeholder="Buscar por producto o categoría..."
+                   autocomplete="off" />
+
+        </div>
+
+    </div>
+
+
+    <!-- MENSAJE CUANDO LA BÚSQUEDA NO DEVUELVE RESULTADOS -->
+    <div id="mensajeSinResultados"
+         class="empty-catalog"
+         style="display:none;">
+
+        No se encontraron productos que coincidan con la búsqueda.
+
+    </div>
+
+
+    <!-- MENSAJE CUANDO EL CATÁLOGO ESTÁ VACÍO -->
+    @if (Model == null || !Model.Any())
+    {
+        <div class="empty-catalog"
+             id="mensajeCatalogoVacio">
+
+            @mensajeVacio
+
+        </div>
+    }
+
+
+    <!--
+        Lo dejamos siempre creado.
+        De esta manera JavaScript puede utilizarlo
+        aunque inicialmente no haya productos.
+    -->
+    <div id="contenedorProductos"
+         class="product-grid">
+
+        @if (Model != null)
+        {
+            @foreach (var producto in Model)
+            {
+                <article class="product-card">
+
+                    <div class="product-image">
+
+                        @if (!string.IsNullOrWhiteSpace(producto.ImagenUrl))
+                        {
+                            <img src="@producto.ImagenUrl"
+                                 alt="@producto.Nombre" />
+                        }
+                        else
+                        {
+                            <div class="product-placeholder">
+
+                                <i class="bi bi-image"></i>
+
+                            </div>
+                        }
+
+
+                        <span class="product-category">
+
+                            @producto.NombreCategoria
+
+                        </span>
+
+                    </div>
+
+
+                    <div class="product-content">
+
+                        <h3>
+                            @producto.Nombre
+                        </h3>
+
+
+                        <p>
+                            @(string.IsNullOrWhiteSpace(producto.Descripcion)
+                                ? "Producto deportivo SportWear."
+                                : producto.Descripcion)
+                        </p>
+
+                        @if (!esPersonalizable)
+                        {
+                            <div class="product-stock @(producto.Stock > 0 ? "in-stock" : "out-stock")">
+                                <i class="bi @(producto.Stock > 0 ? "bi-box-seam" : "bi-x-circle")"></i>
+                                @(producto.Stock > 0 ? $"Stock: {producto.Stock} unidades" : "Sin stock")
+                            </div>
+                        }
+
+                        <div class="product-footer">
+
+                            <div>
+
+                                <small>
+                                    @textoPrecio
+                                </small>
+
+                                <strong>
+                                    S/ @producto.PrecioBase.ToString("N2")
+                                </strong>
+
+                            </div>
+
+
+                            <a asp-controller="Catalogo"
+                               asp-action="Detalle"
+                               asp-route-id="@producto.ProductoId"
+                               class="product-button">
+
+                                @(esPersonalizable ? "Ver modelo" : "Ver producto")
+
+                                <i class="bi bi-arrow-right"></i>
+
+                            </a>
+
+                        </div>
+
+                    </div>
+
+                </article>
+            }
+        }
+
+    </div>
+
+</section>
+
+
+@section Scripts {
+
+    <script>
+
+        /*
+        =========================================================
+        TIPO DE CATÁLOGO ACTUAL
+
+        true  = productos personalizados
+        false = productos de venta directa
+        =========================================================
+        */
+
+        const esPersonalizable =
+            @esPersonalizable.ToString().ToLowerInvariant();
+
+
+        const buscador =
+            document.getElementById("buscarProducto");
+
+        const contenedor =
+            document.getElementById("contenedorProductos");
+
+        const mensajeSinResultados =
+            document.getElementById("mensajeSinResultados");
+
+        const mensajeCatalogoVacio =
+            document.getElementById("mensajeCatalogoVacio");
+
+
+        /*
+        =========================================================
+        EVENTO DEL BUSCADOR
+        AJAX + API + JSON
+        =========================================================
+        */
+
+        if (buscador && contenedor) {
+
+            buscador.addEventListener(
+                "input",
+                async function () {
+
+                    const texto =
+                        this.value
+                            .trim()
+                            .toLowerCase();
+
+
+                    try {
+
+                        /*
+                        Petición AJAX a nuestra Web API
+                        */
+                        const respuesta =
+                            await fetch(
+                                "/api/productosapi",
+                                {
+                                    headers: {
+                                        "Accept": "application/json"
+                                    }
+                                }
+                            );
+
+
+                        if (!respuesta.ok) {
+
+                            throw new Error(
+                                "No se pudo consultar la API de productos."
+                            );
+
+                        }
+
+
+                        /*
+                        Convertimos la respuesta JSON
+                        en objetos JavaScript
+                        */
+                        const productos =
+                            await respuesta.json();
+
+
+                        /*
+                        Filtramos según:
+
+                        - Producto activo
+                        - Tipo de catálogo
+                        - Nombre
+                        - Categoría
+                        */
+                        const filtrados =
+                            productos.filter(
+                                producto => {
+
+                                    const nombre =
+                                        (
+                                            producto.nombre ?? ""
+                                        ).toLowerCase();
+
+
+                                    const categoria =
+                                        (
+                                            producto.nombreCategoria ?? ""
+                                        ).toLowerCase();
+
+
+                                    return (
+                                        producto.activo === true
+                                        &&
+                                        producto.personalizable === esPersonalizable
+                                        &&
+                                        (
+                                            nombre.includes(texto)
+                                            ||
+                                            categoria.includes(texto)
+                                        )
+                                    );
+
+                                }
+                            );
+
+
+                        mostrarProductos(
+                            filtrados
+                        );
+
+                    }
+                    catch (error) {
+
+                        console.error(
+                            "Error consultando productos:",
+                            error
+                        );
+
+                    }
+
+                }
+            );
+
+        }
+
+
+        /*
+        =========================================================
+        MOSTRAR PRODUCTOS SIN RECARGAR LA PÁGINA
+        =========================================================
+        */
+
+        function mostrarProductos(productos) {
+
+            if (!contenedor) {
+                return;
+            }
+
+
+            contenedor.innerHTML = "";
+
+
+            /*
+            Ocultamos el mensaje inicial
+            del catálogo vacío.
+            */
+            if (mensajeCatalogoVacio) {
+
+                mensajeCatalogoVacio.style.display =
+                    "none";
+
+            }
+
+
+            /*
+            Si el filtro no encontró productos
+            */
+            if (productos.length === 0) {
+
+                mensajeSinResultados.style.display =
+                    "block";
+
+                return;
+
+            }
+
+
+            mensajeSinResultados.style.display =
+                "none";
+
+
+            /*
+            Generamos nuevamente las tarjetas
+            con los datos JSON.
+            */
+            productos.forEach(
+                producto => {
+
+                    const articulo =
+                        document.createElement(
+                            "article"
+                        );
+
+
+                    articulo.className =
+                        "product-card";
+
+
+                    /*
+                    Imagen
+                    */
+                    const imagen =
+                        producto.imagenUrl
+                            ?
+                            `
+                                <img
+                                    src="${producto.imagenUrl}"
+                                    alt="${producto.nombre}" />
+                            `
+                            :
+                            `
+                                <div class="product-placeholder">
+
+                                    <i class="bi bi-image"></i>
+
+                                </div>
+                            `;
+
+
+                    /*
+                    Descripción
+                    */
+                    const descripcion =
+                        producto.descripcion
+                        ||
+                        "Producto deportivo SportWear.";
+
+
+                    /*
+                    Texto del precio según
+                    tipo de catálogo.
+                    */
+                    const etiquetaPrecio =
+                        esPersonalizable
+                            ? "Desde"
+                            : "Precio";
+
+
+                    /*
+                    Construcción de tarjeta
+                    */
+                    articulo.innerHTML = `
+
+                        <div class="product-image">
+
+                            ${imagen}
+
+                            <span class="product-category">
+
+                                ${producto.nombreCategoria
+                                    ?? "Sin categoría"}
+
+                            </span>
+
+                        </div>
+
+
+                        <div class="product-content">
+
+                            <h3>
+                                ${producto.nombre}
+                            </h3>
+
+
+                            <p>
+                                ${descripcion}
+                            </p>
+
+                            ${!esPersonalizable
+                                ? `<div class="product-stock ${producto.stock > 0 ? "in-stock" : "out-stock"}">
+                                      <i class="bi ${producto.stock > 0 ? "bi-box-seam" : "bi-x-circle"}"></i>
+                                      ${producto.stock > 0 ? `Stock: ${producto.stock} unidades` : "Sin stock"}
+                                   </div>`
+                                : ""}
+
+                            <div class="product-footer">
+
+                                <div>
+
+                                    <small>
+                                        ${etiquetaPrecio}
+                                    </small>
+
+                                    <strong>
+
+                                        S/
+                                        ${Number(
+                                            producto.precioBase
+                                        ).toFixed(2)}
+
+                                    </strong>
+
+                                </div>
+
+
+                                <a
+                                    href="/Catalogo/Detalle/${producto.productoId}"
+                                    class="product-button">
+
+                                    ${esPersonalizable ? "Ver modelo" : "Ver producto"}
+
+                                    <i class="bi bi-arrow-right"></i>
+
+                                </a>
+
+                            </div>
+
+                        </div>
+                    `;
+
+
+                    contenedor.appendChild(
+                        articulo
+                    );
+
+                }
+            );
+
+        }
+
+    </script>
+
+}

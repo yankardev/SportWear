@@ -1,0 +1,126 @@
+﻿@model SportWear.Web.Models.Pedido
+
+@{
+    ViewData["Title"] = "Detalle del pedido";
+    Layout = "_LayoutAdmin";
+
+    string rolUsuario = Context.Session.GetString("Rol") ?? "";
+    bool puedeAvanzar = rolUsuario == "ADMINISTRADOR" || rolUsuario == "PRODUCCION";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/admin-crud.css" asp-append-version="true" />
+}
+
+<div class="quote-detail-card">
+    <header class="quote-detail-header">
+        <div>
+            <span class="quote-detail-code">@Model.Codigo</span>
+            <h2 class="quote-detail-title">Pedido de confección</h2>
+            <p class="quote-detail-subtitle">Registrado para @Model.NombreCliente</p>
+        </div>
+        <div class="quote-header-right">
+            <span class="badge-status badge-standard">@Model.NombreEstado</span>
+            <span class="quote-date">@Model.FechaPedido.ToString("dd/MM/yyyy HH:mm")</span>
+        </div>
+    </header>
+
+    <section class="quote-client-section">
+        <div class="quote-section-title"><i class="bi bi-person-fill"></i><span>Cliente y entrega</span></div>
+        <div class="quote-client-grid">
+            <div class="quote-info-item"><span class="quote-info-label">Cliente</span><strong>@Model.NombreCliente</strong></div>
+            <div class="quote-info-item"><span class="quote-info-label">Documento</span><strong>@(Model.Documento ?? "No registrado")</strong></div>
+            <div class="quote-info-item"><span class="quote-info-label">Destinatario</span><strong>@(Model.Destinatario ?? "No registrado")</strong></div>
+            <div class="quote-info-item"><span class="quote-info-label">Teléfono</span><strong>@(Model.TelefonoEntrega ?? Model.TelefonoCliente ?? "No registrado")</strong></div>
+            <div class="quote-info-item"><span class="quote-info-label">Dirección</span><strong>@(Model.DireccionEntrega ?? "No registrada")</strong></div>
+            <div class="quote-info-item"><span class="quote-info-label">Distrito</span><strong>@(Model.DistritoEntrega ?? "No registrado")</strong></div>
+            <div class="quote-info-item"><span class="quote-info-label">Entrega estimada</span><strong>@(Model.FechaEntregaEstimada?.ToString("dd/MM/yyyy") ?? "Sin fecha")</strong></div>
+            <div class="quote-info-item"><span class="quote-info-label">Referencia</span><strong>@(Model.ReferenciaEntrega ?? "No registrada")</strong></div>
+        </div>
+    </section>
+
+    <section class="quote-product-section">
+        <div class="quote-section-title"><i class="bi bi-bag-fill"></i><span>Producto</span></div>
+        <div class="quote-specifications">
+            <div class="quote-spec-item"><span>Producto</span><strong>@Model.NombreProducto</strong></div>
+            <div class="quote-spec-item"><span>Cantidad</span><strong>@Model.Cantidad prendas</strong></div>
+            <div class="quote-spec-item"><span>Talla</span><strong>@(Model.Talla ?? "No especificada")</strong></div>
+            <div class="quote-spec-item"><span>Color</span><strong>@(Model.Color ?? "No especificado")</strong></div>
+            <div class="quote-spec-item"><span>Material</span><strong>@(Model.Material ?? "No especificado")</strong></div>
+            <div class="quote-spec-item"><span>Estampado</span><strong>@(Model.TipoEstampado ?? "Sin estampado")</strong></div>
+        </div>
+    </section>
+
+    <section class="quote-amount-section">
+        <div class="quote-section-title"><i class="bi bi-calculator-fill"></i><span>Resumen económico</span></div>
+        <div class="quote-total-box" style="max-width:420px;margin-left:auto;">
+            <div class="quote-total-row"><span>Subtotal</span><strong>S/ @Model.Subtotal.ToString("N2")</strong></div>
+            <div class="quote-total-row"><span>IGV</span><strong>S/ @Model.Igv.ToString("N2")</strong></div>
+            <div class="quote-grand-total"><span>Total</span><strong>S/ @Model.Total.ToString("N2")</strong></div>
+        </div>
+    </section>
+
+    <section class="quote-observation">
+        <i class="bi bi-arrow-repeat"></i>
+        <div style="width:100%;">
+            <strong>Seguimiento del pedido</strong>
+            <div style="margin-top:12px;">
+                <span style="font-size:14px;color:#64748b;">
+                    Estado actual:
+                </span>
+                <strong style="margin-left:6px;color:#6D28D9;">
+                    @Model.NombreEstado
+                </strong>
+            </div>
+
+            @if (ViewBag.SiguienteEstado != null && puedeAvanzar)
+            {
+                <form asp-action="AvanzarEstado" method="post" style="margin-top:16px;">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" name="pedidoId" value="@Model.PedidoId" />
+                    <button type="submit" class="button-submit">
+                        <i class="bi bi-arrow-right-circle"></i>
+                        @switch ((string)ViewBag.SiguienteEstado)
+                        {
+                            case "DISEÑO":
+                                <text>Iniciar diseño</text>
+                                break;
+                            case "CONFECCION":
+                                <text>Iniciar confección</text>
+                                break;
+                            case "LISTO":
+                                <text>Marcar como listo</text>
+                                break;
+                            case "ENTREGADO":
+                                <text>Marcar como entregado</text>
+                                break;
+                            default:
+                                <text>Avanzar estado</text>
+                                break;
+                        }
+                    </button>
+                </form>
+            }
+            else if (ViewBag.SiguienteEstado == null)
+            {
+                <div style="margin-top:16px;">
+                    <span style="color:#16a34a;font-weight:700;">
+                        <i class="bi bi-check-circle-fill"></i>
+                        Proceso finalizado
+                    </span>
+                </div>
+            }
+            else
+            {
+                <div style="margin-top:16px;color:#64748b;font-size:13px;">
+                    <i class="bi bi-info-circle"></i>
+                    El avance de producción se gestiona con el perfil PRODUCCION.
+                </div>
+            }
+        </div>
+    </section>
+
+    <footer class="quote-detail-actions">
+        <a asp-action="Index" class="button-secondary"><i class="bi bi-arrow-left"></i> Volver al listado</a>
+    </footer>
+</div>

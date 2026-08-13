@@ -1,0 +1,513 @@
+﻿.hero {
+    min-height: 470px;
+    padding: 80px 20px;
+    display: flex;
+    align-items: center;
+    background: linear-gradient( 115deg, rgba(46, 16, 101, 0.96), rgba(109, 40, 217, 0.84) );
+    color: white;
+}
+
+.hero-content {
+    width: min(1180px, 92%);
+    margin: auto;
+}
+
+.hero-tag {
+    display: inline-block;
+    margin-bottom: 18px;
+    padding: 8px 14px;
+    background: #b7f34a;
+    color: #2e1065;
+    border-radius: 999px;
+    font-size: 13px;
+    font-weight: 800;
+    text-transform: uppercase;
+}
+
+.hero h1 {
+    max-width: 720px;
+    margin-bottom: 20px;
+    font-size: clamp(38px, 6vw, 67px);
+    line-height: 1.05;
+}
+
+.hero p {
+    max-width: 620px;
+    margin-bottom: 30px;
+    color: #ede9fe;
+    font-size: 19px;
+    line-height: 1.7;
+}
+
+.hero-button {
+    display: inline-block;
+    padding: 14px 22px;
+    background: #b7f34a;
+    color: #2e1065;
+    border-radius: 12px;
+    text-decoration: none;
+    font-weight: 800;
+}
+
+.catalog-section {
+    width: min(1180px, 92%);
+    margin: auto;
+    padding: 70px 0;
+}
+
+.section-heading {
+    max-width: 720px;
+    margin-bottom: 38px;
+}
+
+    .section-heading span {
+        color: #6d28d9;
+        font-size: 13px;
+        font-weight: 800;
+        text-transform: uppercase;
+    }
+
+    .section-heading h2 {
+        margin: 8px 0 12px;
+        color: #2e1065;
+        font-size: 36px;
+    }
+
+    .section-heading p {
+        color: #64748b;
+        line-height: 1.7;
+    }
+
+.product-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(270px, 1fr));
+    gap: 24px;
+}
+
+.product-card {
+    overflow: hidden;
+    background: white;
+    border: 1px solid #e5e7eb;
+    border-radius: 18px;
+    box-shadow: 0 14px 35px rgba(15, 23, 42, 0.08);
+}
+
+.product-image {
+    position: relative;
+    height: 230px;
+    background: #ede9fe;
+}
+
+    .product-image img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+.product-placeholder {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #6d28d9;
+    font-size: 52px;
+}
+
+.product-category {
+    position: absolute;
+    left: 14px;
+    bottom: 14px;
+    padding: 7px 11px;
+    background: rgba(46, 16, 101, 0.9);
+    color: white;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 700;
+}
+
+.product-content {
+    padding: 22px;
+}
+
+    .product-content h3 {
+        margin-bottom: 10px;
+        color: #2e1065;
+        font-size: 21px;
+    }
+
+    .product-content p {
+        min-height: 68px;
+        color: #64748b;
+        line-height: 1.6;
+    }
+
+.product-footer {
+    margin-top: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 14px;
+}
+
+    .product-footer small {
+        display: block;
+        margin-bottom: 4px;
+        color: #94a3b8;
+    }
+
+    .product-footer strong {
+        color: #2e1065;
+        font-size: 20px;
+    }
+
+.product-button {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    padding: 11px 15px;
+    background: #6d28d9;
+    color: white;
+    border-radius: 10px;
+    text-decoration: none;
+    font-weight: 700;
+}
+
+.empty-catalog {
+    padding: 35px;
+    background: white;
+    border: 1px dashed #cbd5e1;
+    border-radius: 16px;
+    color: #64748b;
+    text-align: center;
+}
+
+@media (max-width: 600px) {
+    .product-footer {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .product-button {
+        width: 100%;
+        justify-content: center;
+    }
+}
+
+/* Acciones del hero: mantiene el diseño original y agrega el acceso administrativo. */
+.hero-actions {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    flex-wrap: wrap;
+}
+
+.hero-button {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.hero-admin-button {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 13px 20px;
+    border: 1px solid rgba(255, 255, 255, 0.65);
+    border-radius: 12px;
+    color: white;
+    background: rgba(255, 255, 255, 0.08);
+    text-decoration: none;
+    font-weight: 700;
+    transition: background 0.2s ease, color 0.2s ease;
+}
+
+.hero-admin-button:hover {
+    background: white;
+    color: #2e1065;
+}
+
+/* Cabecera y buscador del catálogo para la demostración AJAX + JSON. */
+.catalog-header {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 28px;
+    margin-bottom: 38px;
+}
+
+.catalog-header .section-heading {
+    margin-bottom: 0;
+}
+
+.catalog-search {
+    width: min(360px, 100%);
+    flex: 0 0 auto;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 15px;
+    background: white;
+    border: 1px solid #d8dee8;
+    border-radius: 12px;
+    box-shadow: 0 8px 22px rgba(15, 23, 42, 0.06);
+}
+
+.catalog-search i {
+    color: #6d28d9;
+    font-size: 17px;
+}
+
+.catalog-search input {
+    width: 100%;
+    border: 0;
+    outline: 0;
+    background: transparent;
+    color: #1f2937;
+    font: inherit;
+}
+
+.catalog-search input::placeholder {
+    color: #94a3b8;
+}
+
+#mensajeSinResultados {
+    margin-bottom: 24px;
+}
+
+@media (max-width: 760px) {
+    .catalog-header {
+        align-items: stretch;
+        flex-direction: column;
+    }
+
+    .catalog-search {
+        width: 100%;
+    }
+}
+
+
+.product-stock {
+    margin-top: 10px;
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    font-size: 13px;
+    font-weight: 800;
+}
+.product-stock.in-stock { color: #15803d; }
+.product-stock.out-stock { color: #b91c1c; }
+
+
+/* Ajuste final de precio y botón en tarjetas de venta directa */
+.product-footer {
+    display: grid;
+    grid-template-columns: minmax(78px, 1fr) auto;
+    align-items: end;
+    gap: 12px;
+}
+
+.product-footer > div {
+    min-width: 0;
+}
+
+.product-footer strong {
+    display: block;
+    white-space: nowrap;
+    line-height: 1.15;
+}
+
+.product-button {
+    min-width: 132px;
+    justify-content: center;
+    white-space: nowrap;
+    padding-inline: 13px;
+}
+
+@media (max-width: 600px) {
+    .product-footer {
+        grid-template-columns: 1fr;
+        align-items: stretch;
+    }
+
+    .product-button {
+        width: 100%;
+    }
+}
+/* =========================================================
+   AJUSTE FINAL TARJETAS CATÁLOGO
+   ========================================================= */
+
+/* Todas las tarjetas mantienen la misma altura */
+.product-grid {
+    align-items: stretch;
+}
+
+.product-card {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    transition: transform .25s ease, box-shadow .25s ease, border-color .25s ease;
+}
+
+
+    /* Efecto al pasar el mouse por la tarjeta */
+    .product-card:hover {
+        transform: translateY(-6px);
+        box-shadow: 0 18px 38px rgba(46, 16, 101, .14);
+        border-color: rgba(109, 40, 217, .25);
+    }
+
+
+/* =========================================================
+   IMAGEN
+   ========================================================= */
+
+.product-image {
+    position: relative;
+    overflow: hidden;
+    height: 230px;
+    min-height: 230px;
+    background: #f8fafc;
+}
+
+
+    /* Imagen uniforme */
+    .product-image img {
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+        transition: transform .35s ease, filter .35s ease;
+    }
+
+
+/* Zoom suave */
+.product-card:hover .product-image img {
+    transform: scale(1.06);
+    filter: brightness(1.03) contrast(1.03);
+}
+
+
+/* Resaltado suave sobre imagen */
+.product-image::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background: linear-gradient( 135deg, rgba(109, 40, 217, 0), rgba(183, 243, 74, 0) );
+    transition: background .3s ease;
+}
+
+
+.product-card:hover .product-image::after {
+    background: linear-gradient( 135deg, rgba(109, 40, 217, .05), rgba(183, 243, 74, .08) );
+}
+
+
+/* =========================================================
+   CONTENIDO
+   ========================================================= */
+
+.product-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    padding: 22px;
+}
+
+
+    /* Nombre con máximo 2 líneas */
+    .product-content h3 {
+        min-height: 52px;
+        display: -webkit-box;
+        -webkit-box-orient: vertical;
+        -webkit-line-clamp: 2;
+        overflow: hidden;
+    }
+
+
+    /* Descripción limitada a 3 líneas */
+    .product-content > p {
+        display: -webkit-box;
+        -webkit-box-orient: vertical;
+        -webkit-line-clamp: 3;
+        overflow: hidden;
+        min-height: 72px;
+        margin-bottom: 14px;
+    }
+
+
+/* =========================================================
+   PRECIO + BOTÓN SIEMPRE ABAJO
+   ========================================================= */
+
+.product-footer {
+    margin-top: auto;
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 14px;
+    padding-top: 16px;
+}
+
+
+    /* Evita que el precio se comprima */
+    .product-footer > div {
+        flex: 0 0 auto;
+        min-width: 82px;
+    }
+
+
+    .product-footer small {
+        display: block;
+        margin-bottom: 3px;
+    }
+
+
+    .product-footer strong {
+        display: block;
+        white-space: nowrap;
+        font-size: 21px;
+        line-height: 1.1;
+    }
+
+
+/* Botón alineado */
+.product-button {
+    flex: 0 0 auto;
+    min-width: 132px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 9px;
+    white-space: nowrap;
+    transition: transform .2s ease, box-shadow .2s ease, background .2s ease;
+}
+
+
+    .product-button:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 18px rgba(109, 40, 217, .20);
+    }
+
+
+/* =========================================================
+   RESPONSIVE
+   ========================================================= */
+
+@media (max-width: 600px) {
+
+    .product-image {
+        height: 250px;
+        min-height: 250px;
+    }
+
+    .product-footer {
+        align-items: center;
+    }
+
+    .product-button {
+        min-width: 125px;
+    }
+}

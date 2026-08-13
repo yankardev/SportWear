@@ -1,0 +1,343 @@
+﻿@model SportWear.Web.Models.ReporteResumen
+
+@{
+    ViewData["Title"] = "Dashboard";
+    Layout = "_LayoutAdmin";
+
+    string nombreUsuario = Context.Session.GetString("NombreUsuario") ?? "Usuario";
+    string rolUsuario = Context.Session.GetString("Rol") ?? "";
+    bool esAdministrador = rolUsuario == "ADMINISTRADOR";
+    bool esVentas = rolUsuario == "VENTAS";
+    bool esProduccion = rolUsuario == "PRODUCCION";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/dashboard.css" asp-append-version="true" />
+}
+
+<section class="dashboard-hero">
+    <div class="hero-dashboard-content">
+        <span class="dashboard-badge">
+            <i class="bi bi-lightning-charge-fill"></i>
+            Panel principal
+        </span>
+
+        <h1>
+            Hola, <span>@nombreUsuario</span>
+        </h1>
+
+        <p>
+            Revisa el movimiento de SportWear, gestiona los productos,
+            controla los pedidos y atiende las solicitudes de confección
+            personalizada desde un solo lugar.
+        </p>
+
+    </div>
+
+    <div class="hero-dashboard-icon">
+        <i class="bi bi-trophy-fill"></i>
+    </div>
+
+</section>
+
+<section class="dashboard-stats">
+
+    <article class="stat-card">
+
+        <div class="stat-header">
+
+            <div>
+                <p class="stat-label">
+                    Productos activos
+                </p>
+
+                <h3 class="stat-value">
+                    @Model.TotalProductos
+                </h3>
+            </div>
+
+            <div class="stat-icon">
+                <i class="bi bi-bag-fill"></i>
+            </div>
+
+        </div>
+
+        <div class="stat-footer">
+            <i class="bi bi-arrow-up"></i>
+            Catálogo disponible
+        </div>
+
+    </article>
+
+    <article class="stat-card">
+
+        <div class="stat-header">
+
+            <div>
+                <p class="stat-label">
+                    Pedidos pendientes
+                </p>
+
+                <h3 class="stat-value">
+                    @Model.PedidosPendientes
+                </h3>
+            </div>
+
+            <div class="stat-icon lime">
+                <i class="bi bi-box-seam-fill"></i>
+            </div>
+
+        </div>
+
+        <div class="stat-footer">
+            <i class="bi bi-clock-fill"></i>
+            Requieren atención
+        </div>
+
+    </article>
+
+    <article class="stat-card">
+
+        <div class="stat-header">
+
+            <div>
+                <p class="stat-label">
+                    Cotizaciones
+                </p>
+
+                <h3 class="stat-value">
+                    @Model.TotalCotizaciones
+                </h3>
+            </div>
+
+            <div class="stat-icon dark">
+                <i class="bi bi-file-earmark-text-fill"></i>
+            </div>
+
+        </div>
+
+        <div class="stat-footer">
+            <i class="bi bi-arrow-up"></i>
+            Solicitudes registradas
+        </div>
+
+    </article>
+
+    <article class="stat-card">
+
+        <div class="stat-header">
+
+            <div>
+                <p class="stat-label">
+                    Clientes
+                </p>
+
+                <h3 class="stat-value">
+                    @Model.TotalClientes
+                </h3>
+            </div>
+
+            <div class="stat-icon pink">
+                <i class="bi bi-people-fill"></i>
+            </div>
+
+        </div>
+
+        <div class="stat-footer">
+            <i class="bi bi-person-check-fill"></i>
+            Usuarios registrados
+        </div>
+
+    </article>
+
+</section>
+
+<section class="dashboard-grid">
+
+    <article class="dashboard-card">
+
+        <header class="dashboard-card-header">
+
+            <h3 class="dashboard-card-title">
+                Acciones rápidas
+            </h3>
+
+            @if (esAdministrador || esVentas)
+            {
+                <a asp-controller="Producto"
+                   asp-action="Index"
+                   class="dashboard-card-link">
+                    Ver catálogo
+                </a>
+            }
+            else
+            {
+                <a asp-controller="Pedido"
+                   asp-action="Index"
+                   class="dashboard-card-link">
+                    Ver pedidos
+                </a>
+            }
+
+        </header>
+
+        <div class="dashboard-card-body">
+
+            <div class="quick-actions">
+
+                @if (esAdministrador || esVentas)
+                {
+                    <a asp-controller="Producto"
+                       asp-action="Registrar"
+                       class="quick-action">
+
+                        <div class="quick-action-icon">
+                            <i class="bi bi-plus-circle-fill"></i>
+                        </div>
+
+                        <div>
+                            <strong>Nuevo producto</strong>
+                            <span>Registrar en el catálogo</span>
+                        </div>
+
+                    </a>
+
+                    <a asp-controller="Venta"
+                       asp-action="Index"
+                       class="quick-action">
+
+                        <div class="quick-action-icon">
+                            <i class="bi bi-cart-check-fill"></i>
+                        </div>
+
+                        <div>
+                            <strong>Ventas directas</strong>
+                            <span>Revisar compras de tienda</span>
+                        </div>
+
+                    </a>
+
+                    <a asp-controller="Cotizacion"
+                       asp-action="Index"
+                       class="quick-action">
+
+                        <div class="quick-action-icon">
+                            <i class="bi bi-calculator-fill"></i>
+                        </div>
+
+                        <div>
+                            <strong>Cotizaciones</strong>
+                            <span>Revisar solicitudes</span>
+                        </div>
+
+                    </a>
+                }
+
+                @if (esProduccion)
+                {
+                    <a asp-controller="SolicitudConfeccion"
+                       asp-action="Index"
+                       class="quick-action">
+
+                        <div class="quick-action-icon">
+                            <i class="bi bi-scissors"></i>
+                        </div>
+
+                        <div>
+                            <strong>Confección</strong>
+                            <span>Revisar trabajos pendientes</span>
+                        </div>
+
+                    </a>
+                }
+
+                <a asp-controller="Pedido"
+                   asp-action="Index"
+                   class="quick-action">
+
+                    <div class="quick-action-icon">
+                        <i class="bi bi-truck"></i>
+                    </div>
+
+                    <div>
+                        <strong>Gestionar pedidos</strong>
+                        <span>Actualizar seguimiento</span>
+                    </div>
+
+                </a>
+
+                @if (esAdministrador)
+                {
+                    <a asp-controller="Reporte"
+                       asp-action="Index"
+                       class="quick-action">
+
+                        <div class="quick-action-icon">
+                            <i class="bi bi-graph-up-arrow"></i>
+                        </div>
+
+                        <div>
+                            <strong>Ver reportes</strong>
+                            <span>Consultar resultados</span>
+                        </div>
+
+                    </a>
+                }
+
+            </div>
+
+        </div>
+
+    </article>
+
+    <article class="dashboard-card">
+
+        <header class="dashboard-card-header">
+
+            <h3 class="dashboard-card-title">
+                Flujo del negocio
+            </h3>
+
+            <a asp-controller="SolicitudConfeccion"
+               asp-action="Index"
+               class="dashboard-card-link">
+                Ver solicitudes
+            </a>
+
+        </header>
+
+        <div class="dashboard-card-body">
+
+            <div class="activity-list">
+
+                <div class="activity-item">
+                    <div class="activity-marker"></div>
+                    <div>
+                        <p class="activity-title">Solicitud de confección</p>
+                        <p class="activity-time">El cliente registra su requerimiento.</p>
+                    </div>
+                </div>
+
+                <div class="activity-item">
+                    <div class="activity-marker lime"></div>
+                    <div>
+                        <p class="activity-title">Cotización y aprobación</p>
+                        <p class="activity-time">Ventas calcula el importe y genera el PDF.</p>
+                    </div>
+                </div>
+
+                <div class="activity-item">
+                    <div class="activity-marker dark"></div>
+                    <div>
+                        <p class="activity-title">Producción y entrega</p>
+                        <p class="activity-time">El pedido avanza hasta quedar entregado.</p>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+
+    </article>
+
+</section>

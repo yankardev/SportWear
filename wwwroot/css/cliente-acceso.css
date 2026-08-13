@@ -1,0 +1,135 @@
+﻿.access-section {
+    width: min(850px, 92%);
+    margin: auto;
+    padding: 65px 0;
+}
+
+.access-card {
+    padding: 38px;
+    background: white;
+    border: 1px solid #e5e7eb;
+    border-radius: 22px;
+    box-shadow: 0 18px 45px rgba(15, 23, 42, 0.08);
+}
+
+.access-login {
+    max-width: 520px;
+    margin: auto;
+}
+
+.access-heading {
+    margin-bottom: 30px;
+    text-align: center;
+}
+
+    .access-heading span {
+        color: #6d28d9;
+        font-size: 13px;
+        font-weight: 800;
+        text-transform: uppercase;
+    }
+
+    .access-heading h1 {
+        margin: 7px 0 10px;
+        color: #2e1065;
+        font-size: 34px;
+    }
+
+    .access-heading p {
+        color: #64748b;
+        line-height: 1.7;
+    }
+
+.access-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 18px;
+}
+
+.access-full {
+    grid-column: 1 / -1;
+}
+
+.access-group {
+    margin-bottom: 18px;
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+}
+
+    .access-group label {
+        color: #334155;
+        font-weight: 700;
+    }
+
+    .access-group input {
+        width: 100%;
+        padding: 12px 13px;
+        border: 1px solid #cbd5e1;
+        border-radius: 10px;
+        font: inherit;
+        outline: none;
+    }
+
+        .access-group input:focus {
+            border-color: #6d28d9;
+            box-shadow: 0 0 0 3px rgba(109, 40, 217, 0.12);
+        }
+
+    .access-group span,
+    .validation-summary {
+        color: #dc2626;
+        font-size: 13px;
+    }
+
+.access-button {
+    width: 100%;
+    margin-top: 10px;
+    padding: 13px;
+    border: none;
+    border-radius: 11px;
+    background: #6d28d9;
+    color: white;
+    font: inherit;
+    font-weight: 800;
+    cursor: pointer;
+}
+
+    .access-button:hover {
+        opacity: .9;
+    }
+
+.access-footer {
+    margin-top: 25px;
+    color: #64748b;
+    text-align: center;
+}
+
+    .access-footer a {
+        color: #6d28d9;
+        font-weight: 800;
+        text-decoration: none;
+    }
+
+.success-message {
+    margin-bottom: 20px;
+    padding: 13px;
+    background: #ecfdf5;
+    color: #047857;
+    border-radius: 10px;
+    text-align: center;
+}
+
+@media (max-width: 650px) {
+    .access-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .access-full {
+        grid-column: auto;
+    }
+
+    .access-card {
+        padding: 25px 20px;
+    }
+}

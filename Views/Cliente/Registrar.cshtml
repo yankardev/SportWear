@@ -1,0 +1,102 @@
+﻿@model SportWear.Web.Models.Cliente
+
+@{
+    ViewData["Title"] = "Registrar Cliente";
+    Layout = "_LayoutAdmin";
+}
+
+@section Styles {
+    <link rel="stylesheet"
+          href="~/css/admin-crud.css"
+          asp-append-version="true" />
+}
+
+<div class="form-card">
+
+    <div class="form-card-header">
+
+        <h2 class="form-card-title">
+            Registrar Cliente
+        </h2>
+
+        <p class="form-card-description">
+            Registre un nuevo cliente del sistema.
+        </p>
+
+    </div>
+
+    <div class="form-card-body">
+
+        <form asp-action="Registrar" method="post">
+
+            @Html.AntiForgeryToken()
+
+            <div asp-validation-summary="ModelOnly"
+                 class="text-danger mb-3"></div>
+
+            <div class="form-grid">
+
+                <div class="form-group">
+                    <label asp-for="Nombres" class="form-label"></label>
+                    <input asp-for="Nombres" class="form-control-sport" />
+                    <span asp-validation-for="Nombres" class="form-validation"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="Apellidos" class="form-label"></label>
+                    <input asp-for="Apellidos" class="form-control-sport" />
+                    <span asp-validation-for="Apellidos" class="form-validation"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="Documento" class="form-label"></label>
+                    <input asp-for="Documento" class="form-control-sport" />
+                    <span asp-validation-for="Documento" class="form-validation"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="Telefono" class="form-label"></label>
+                    <input asp-for="Telefono" class="form-control-sport" />
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="Correo" class="form-label"></label>
+                    <input asp-for="Correo" class="form-control-sport" />
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="Direccion" class="form-label"></label>
+                    <input asp-for="Direccion" class="form-control-sport" />
+                </div>
+
+            </div>
+
+            <div class="form-actions">
+
+                <a asp-action="Index"
+                   class="button-secondary">
+
+                    Cancelar
+
+                </a>
+
+                <button type="submit"
+                        class="button-submit">
+
+                    Registrar
+
+                </button>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
+
+@section Scripts {
+
+    <partial name="_ValidationScriptsPartial" />
+
+}

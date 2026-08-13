@@ -1,0 +1,86 @@
+@model SportWear.Web.Models.Pedido
+
+@{
+    ViewData["Title"] = "Registrar pedido";
+    Layout = "_LayoutAdmin";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/admin-crud.css" asp-append-version="true" />
+}
+
+<div class="crud-header">
+    <div>
+        <h2 class="crud-title">Registrar pedido</h2>
+        <p class="crud-description">Complete los datos de entrega de la cotización @Model.CodigoCotizacion.</p>
+    </div>
+</div>
+
+<section class="crud-card" style="padding:24px;">
+    <div asp-validation-summary="ModelOnly" class="alert-message error-message"></div>
+
+    <div class="quote-client-grid" style="margin-bottom:24px;">
+        <div class="quote-info-item"><span class="quote-info-label">Cliente</span><strong>@Model.NombreCliente</strong></div>
+        <div class="quote-info-item"><span class="quote-info-label">Producto</span><strong>@Model.NombreProducto</strong></div>
+        <div class="quote-info-item"><span class="quote-info-label">Cantidad</span><strong>@Model.Cantidad prendas</strong></div>
+        <div class="quote-info-item"><span class="quote-info-label">Total</span><strong>S/ @Model.Total.ToString("N2")</strong></div>
+    </div>
+
+    <form asp-action="Registrar" method="post">
+        @Html.AntiForgeryToken()
+        <input asp-for="CotizacionId" type="hidden" />
+        <input asp-for="CodigoCotizacion" type="hidden" />
+        <input asp-for="NombreCliente" type="hidden" />
+        <input asp-for="NombreProducto" type="hidden" />
+        <input asp-for="Cantidad" type="hidden" />
+        <input asp-for="Subtotal" type="hidden" />
+        <input asp-for="Igv" type="hidden" />
+        <input asp-for="Total" type="hidden" />
+
+        <div class="form-grid">
+            <div class="form-group">
+                <label asp-for="FechaEntregaEstimada" class="form-label"></label>
+                <input asp-for="FechaEntregaEstimada" class="form-control-sport" />
+                <span asp-validation-for="FechaEntregaEstimada" class="form-validation"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Destinatario" class="form-label"></label>
+                <input asp-for="Destinatario" class="form-control-sport" />
+                <span asp-validation-for="Destinatario" class="form-validation"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="TelefonoEntrega" class="form-label"></label>
+                <input asp-for="TelefonoEntrega" class="form-control-sport" />
+            </div>
+            <div class="form-group">
+                <label asp-for="DistritoEntrega" class="form-label"></label>
+                <input asp-for="DistritoEntrega" class="form-control-sport" />
+            </div>
+            <div class="form-group form-group-full">
+                <label asp-for="DireccionEntrega" class="form-label"></label>
+                <input asp-for="DireccionEntrega" class="form-control-sport" />
+            </div>
+            <div class="form-group form-group-full">
+                <label asp-for="ReferenciaEntrega" class="form-label"></label>
+                <input asp-for="ReferenciaEntrega" class="form-control-sport" />
+            </div>
+            <div class="form-group form-group-full">
+                <label asp-for="Observaciones" class="form-label"></label>
+                <textarea asp-for="Observaciones" class="form-control-sport" rows="4"></textarea>
+            </div>
+        </div>
+
+        <div class="form-actions">
+            <a asp-controller="Cotizacion" asp-action="Detalle" asp-route-id="@Model.CotizacionId" class="button-secondary">
+                <i class="bi bi-arrow-left"></i> Volver
+            </a>
+            <button type="submit" class="button-submit">
+                <i class="bi bi-box-seam-fill"></i> Registrar pedido
+            </button>
+        </div>
+    </form>
+</section>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

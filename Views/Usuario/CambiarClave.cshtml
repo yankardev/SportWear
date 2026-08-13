@@ -1,0 +1,7 @@
+@model SportWear.Web.ViewModels.CambiarClaveViewModel
+@{ ViewData["Title"] = "Cambiar contraseña"; Layout = "_LayoutAdmin"; }
+@section Styles { <link rel="stylesheet" href="~/css/admin-crud.css" asp-append-version="true" /> }
+<div class="form-card"><div class="form-card-header"><h2 class="form-card-title">Cambiar contraseña</h2><p class="form-card-description">Usuario: @Model.NombreUsuario</p></div><div class="form-card-body"><form asp-action="CambiarClave" method="post">@Html.AntiForgeryToken()<input asp-for="UsuarioId" type="hidden" /><input asp-for="NombreUsuario" type="hidden" /><div asp-validation-summary="ModelOnly" class="form-validation"></div><div class="form-grid">
+<div class="form-group"><label asp-for="NuevaClave" class="form-label"></label><input asp-for="NuevaClave" class="form-control-sport" /><span asp-validation-for="NuevaClave" class="form-validation"></span></div>
+<div class="form-group"><label asp-for="ConfirmarClave" class="form-label"></label><input asp-for="ConfirmarClave" class="form-control-sport" /><span asp-validation-for="ConfirmarClave" class="form-validation"></span></div></div><div class="form-actions"><a asp-action="Index" class="button-secondary">Cancelar</a><button class="button-submit">Actualizar contraseña</button></div></form></div></div>
+@section Scripts { <partial name="_ValidationScriptsPartial" /> }

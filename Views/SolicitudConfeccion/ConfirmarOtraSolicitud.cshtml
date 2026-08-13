@@ -1,0 +1,72 @@
+﻿@{
+    ViewData["Title"] = "Solicitud registrada";
+    Layout = "_LayoutAdmin";
+}
+
+@section Styles {
+    <link rel="stylesheet"
+          href="~/css/admin-crud.css"
+          asp-append-version="true" />
+}
+
+<div class="form-card">
+
+    <div class="form-card-header">
+
+        <h2 class="form-card-title">
+            Solicitud registrada
+        </h2>
+
+        <p class="form-card-description">
+            La solicitud de confección se registró correctamente.
+        </p>
+
+    </div>
+
+    <div class="form-card-body">
+
+        <div class="confirmation-box">
+
+            <div class="confirmation-icon">
+                <i class="bi bi-check-lg"></i>
+            </div>
+
+            <h3>
+                ¿Deseas agregar otra solicitud?
+            </h3>
+
+            <p>
+                Puedes registrar otra prenda personalizada
+                para el mismo cliente:
+            </p>
+
+            <strong>
+                @ViewBag.ClienteNombre
+            </strong>
+
+        </div>
+
+        <div class="form-actions">
+
+            <a asp-action="Index"
+               class="button-secondary">
+
+                No, continuar
+
+            </a>
+
+            <a asp-action="Registrar"
+               asp-route-clienteId="@ViewBag.ClienteId"
+               class="button-submit">
+
+                <i class="bi bi-plus-lg"></i>
+
+                Sí, agregar otra
+
+            </a>
+
+        </div>
+
+    </div>
+
+</div>

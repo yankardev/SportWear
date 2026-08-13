@@ -1,0 +1,157 @@
+﻿@{
+    int? clienteId = Context.Session.GetInt32("ClienteId");
+    int carritoCantidad = Context.Session.GetInt32("CarritoCantidad") ?? 0;
+    string clienteNombre = Context.Session.GetString("ClienteNombre") ?? "";
+    string controladorActual = ViewContext.RouteData.Values["controller"]?.ToString() ?? "";
+    string accionActual = ViewContext.RouteData.Values["action"]?.ToString() ?? "";
+}
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - SportWear</title>
+
+    <link rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
+    <link rel="stylesheet"
+          href="~/css/cliente-layout.css"
+          asp-append-version="true" />
+
+    @await RenderSectionAsync("Styles", required: false)
+</head>
+<body>
+    <header class="client-header">
+        <div class="client-navbar">
+            <a asp-controller="Catalogo"
+               asp-action="Index"
+               class="client-brand">
+                <span class="client-logo">SW</span>
+                <span>SportWear</span>
+            </a>
+
+            <nav class="client-navigation">
+                <a asp-controller="Catalogo"
+                   asp-action="Index"
+                   class="@(controladorActual == "Catalogo" && accionActual == "Index" ? "active" : "")">
+                    <i class="bi bi-house"></i>
+                    Inicio
+                </a>
+
+                <a asp-controller="Catalogo"
+                   asp-action="Index"
+                   asp-fragment="productos">
+                    <i class="bi bi-shop"></i>
+                    Catálogo
+                </a>
+
+                <a asp-controller="Catalogo"
+                   asp-action="Personalizados"
+                   class="@(controladorActual == "Catalogo" && accionActual == "Personalizados" ? "active" : "")">
+                    <i class="bi bi-palette"></i>
+                    Personalizados
+                </a>
+
+                <a asp-controller="Carrito"
+                   asp-action="Index"
+                   class="client-cart-link @(controladorActual == "Carrito" ? "active" : "")">
+                    <i class="bi bi-cart3"></i>
+                    Carrito
+                    @if (carritoCantidad > 0)
+                    {
+                        <span class="cart-count">@carritoCantidad</span>
+                    }
+                </a>
+
+                @if (clienteId != null)
+                {
+                    <a asp-controller="ClientePortal"
+                       asp-action="MiCuenta"
+                       class="@(controladorActual == "ClientePortal" && accionActual == "MiCuenta" ? "active" : "")">
+                        <i class="bi bi-box-seam"></i>
+                        Mis pedidos
+                    </a>
+
+                    <a asp-controller="Favorito"
+                       asp-action="Index"
+                       class="@(controladorActual == "Favorito" ? "active" : "")">
+                        <i class="bi bi-heart"></i>
+                        Favoritos
+                    </a>
+
+                    <a asp-controller="ClientePortal"
+                       asp-action="MiCuenta"
+                       asp-fragment="cotizaciones">
+                        <i class="bi bi-file-earmark-text"></i>
+                        Proformas
+                    </a>
+
+                    <a asp-controller="ClientePortal"
+                       asp-action="MiCuenta"
+                       class="client-account-link">
+                        <i class="bi bi-person-circle"></i>
+                        <span>@clienteNombre</span>
+                    </a>
+
+                    <form asp-controller="ClientePortal"
+                          asp-action="Salir"
+                          method="post"
+                          class="logout-client-form">
+                        @Html.AntiForgeryToken()
+                        <button type="submit" class="logout-client-button">
+                            <i class="bi bi-box-arrow-right"></i>
+                            Salir
+                        </button>
+                    </form>
+                }
+                else
+                {
+                    <a asp-controller="ClientePortal" asp-action="Login">
+                        <i class="bi bi-person"></i>
+                        Iniciar sesión
+                    </a>
+
+                    <a asp-controller="ClientePortal"
+                       asp-action="Registro"
+                       class="client-register-link">
+                        Registrarse
+                    </a>
+                }
+            </nav>
+        </div>
+    </header>
+
+    @if (TempData["MensajeExito"] is not null || TempData["MensajeError"] is not null)
+    {
+        <div class="client-message-wrap">
+            @if (TempData["MensajeExito"] is not null)
+            {
+                <div class="client-message client-message-success">
+                    <i class="bi bi-check-circle-fill"></i>
+                    @TempData["MensajeExito"]
+                </div>
+            }
+            @if (TempData["MensajeError"] is not null)
+            {
+                <div class="client-message client-message-error">
+                    <i class="bi bi-exclamation-triangle-fill"></i>
+                    @TempData["MensajeError"]
+                </div>
+            }
+        </div>
+    }
+
+    <main>
+        @RenderBody()
+    </main>
+
+    <footer class="client-footer">
+        <p>
+            © @DateTime.Now.Year SportWear. Ropa deportiva, venta directa y confección personalizada.
+        </p>
+    </footer>
+
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

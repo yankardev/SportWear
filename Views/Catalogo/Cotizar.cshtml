@@ -1,0 +1,196 @@
+﻿@model SportWear.Web.ViewModels.CotizacionPublicaViewModel
+
+@{
+    ViewData["Title"] = "Solicitar cotización";
+    Layout = "_LayoutCliente";
+}
+
+@section Styles {<link rel="stylesheet" href="~/css/cotizacion-publica.css" asp-append-version="true" />}
+
+<section class="quote-section">
+    <div class="quote-container">
+        <div class="quote-heading">
+            <span class="quote-label">
+                Cotización en línea
+            </span>
+            <h1>
+                Personaliza tu producto
+            </h1>
+            <p>
+                Revisa los datos de tu cuenta y selecciona las características que necesitas para recibir una cotización.
+            </p>
+
+        </div>
+        <div class="selected-product">
+            <div>
+                <span>Producto seleccionado</span>
+                <strong>
+                    @Model.NombreProducto
+                </strong>
+            </div>
+            <div>
+                <span>Precio base</span>
+                <strong>
+                    S/ @Model.PrecioBase.ToString("N2")
+                </strong>
+            </div>
+        </div>
+        <form asp-action="Cotizar" asp-controller="Catalogo" method="post" class="quote-form">
+            @Html.AntiForgeryToken()
+            <input asp-for="ProductoId" type="hidden" />
+            <input asp-for="NombreProducto" type="hidden" />
+            <input asp-for="PrecioBase" type="hidden" />
+            <div asp-validation-summary="ModelOnly" class="validation-summary">
+            </div>
+            <div class="form-section">
+                <h2>
+                    Datos de tu cuenta
+                </h2>
+                <p class="account-data-note">
+                    La solicitud quedará asociada automáticamente a tu cuenta de cliente.
+                </p>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label asp-for="Nombres">Nombres</label>
+                        <input asp-for="Nombres" readonly />
+                        <span asp-validation-for="Nombres"class="field-error"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="Apellidos">Apellidos</label>
+                        <input asp-for="Apellidos" readonly />
+                        <span asp-validation-for="Apellidos"class="field-error"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="Documento">Documento</label>
+                        <input asp-for="Documento" readonly />
+                        <span asp-validation-for="Documento"class="field-error"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="Telefono">Teléfono</label>
+                        <input asp-for="Telefono" readonly />
+                        <span asp-validation-for="Telefono"class="field-error"></span>
+                    </div>
+                    <div class="form-group form-group-full">
+                        <label asp-for="Correo">Correo</label>
+                        <input asp-for="Correo" type="email" readonly />
+                        <span asp-validation-for="Correo" class="field-error"></span>
+                    </div>
+                </div>
+            </div>
+            <div class="form-section">
+                <h2>
+                    Personalización
+                </h2>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label asp-for="Cantidad">Cantidad</label>
+                        <input asp-for="Cantidad" type="number" min="1" />
+                        <span asp-validation-for="Cantidad" class="field-error"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="Talla">Talla</label>
+                        <select asp-for="Talla" class="form-select">
+                            <option value="">Seleccione</option>
+                            <option>S</option>
+                            <option>M</option>
+                            <option>L</option>
+                            <option>XL</option>
+                        </select>
+                        <span asp-validation-for="Talla"
+                              class="field-error">
+                        </span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="Color"> Color </label>
+                        <select asp-for="Color" class="form-select">
+                            <option value="">-- Seleccione un color --</option>
+                            <option value="Negro">Negro</option>
+                            <option value="Blanco">Blanco</option>
+                            <option value="Azul marino">Azul marino</option>
+                            <option value="Rojo">Rojo</option>
+                            <option value="Gris">Gris</option>
+                            <option value="Morado">Morado</option>
+                            <option value="Verde">Verde</option>
+                            <option value="Coral">Coral</option>
+                        </select>
+                        <span asp-validation-for="Color" class="field-error"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="Material"> Material </label>
+                        <select asp-for="Material" class="form-select">
+                            <option value="">Seleccione</option>
+                            <option>Dry Fit</option>
+                            <option>Poliéster</option>
+                            <option>Algodón</option>
+                            <option value="Algodón perchado">Algodón perchado</option>
+                            <option value="Lycra">Lycra</option>
+                            <option value="Taslan">Taslan</option>
+                        </select>
+                        <span asp-validation-for="Material"  class="field-error">
+                        </span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="TipoEstampado">
+                            Tipo de estampado
+                        </label>
+
+                        <select asp-for="TipoEstampado" class="form-select">
+                            <option value="">
+                                Sin estampado
+                            </option>
+                            <option>Sublimación</option>
+                            <option>Serigrafía</option>
+                            <option>Bordado</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label asp-for="TextoPersonalizado">
+                            Texto personalizado
+                        </label>
+
+                        <input asp-for="TextoPersonalizado" />
+                    </div>
+
+                    <div class="form-group form-group-full">
+                        <label asp-for="Observaciones">
+                            Observaciones
+                        </label>
+
+                        <textarea asp-for="Observaciones"
+                                  rows="4">
+                        </textarea>
+                    </div>
+
+                </div>
+
+            </div>
+
+            <div class="quote-actions">
+
+                <a asp-action="Detalle"
+                   asp-route-id="@Model.ProductoId"
+                   class="button-back">
+
+                    Volver
+                </a>
+
+                <button type="submit"
+                        class="button-send">
+
+                    Solicitar cotización
+
+                    <i class="bi bi-send-fill"></i>
+                </button>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</section>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

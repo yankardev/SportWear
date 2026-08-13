@@ -1,0 +1,272 @@
+﻿@model SportWear.Web.Models.SolicitudConfeccion
+
+@{
+    ViewData["Title"] = "Detalle de solicitud";
+    Layout = "_LayoutAdmin";
+
+    string rolUsuario = Context.Session.GetString("Rol") ?? "";
+    bool puedeGestionar = rolUsuario == "ADMINISTRADOR" || rolUsuario == "VENTAS";
+}
+
+@section Styles {
+    <link rel="stylesheet"
+          href="~/css/admin-crud.css"
+          asp-append-version="true" />
+}
+
+<div class="detail-card">
+    <div class="detail-header">
+        <div>
+            <p class="detail-subtitle">
+                Solicitud SOL-@Model.SolicitudId.ToString("D4")
+            </p>
+
+            <h2 class="detail-title">
+                @Model.NombreProducto
+            </h2>
+
+        </div>
+
+        @switch (Model.Estado)
+        {
+            case "PENDIENTE":
+                <span class="badge-status badge-standard">
+                    <i class="bi bi-clock-fill"></i>
+                    Pendiente
+                </span>
+                break;
+
+            case "COTIZADA":
+                <span class="badge-status badge-custom">
+                    <i class="bi bi-calculator-fill"></i>
+                    Cotizada
+                </span>
+                break;
+
+            case "APROBADA":
+                <span class="badge-status badge-active">
+                    <i class="bi bi-check-circle-fill"></i>
+                    Aprobada
+                </span>
+                break;
+
+            default:
+                <span class="badge-status badge-inactive">
+                    @Model.Estado
+                </span>
+                break;
+        }
+
+    </div>
+
+    <div class="detail-body">
+
+        <div class="detail-image-wrapper">
+            @if (!string.IsNullOrWhiteSpace(
+                ViewBag.ImagenProducto))
+            {
+                <img src="@ViewBag.ImagenProducto"  alt="@Model.NombreProducto" class="detail-image" />
+            }
+            else
+            {
+                <div class="detail-image-placeholder">
+                    <i class="bi bi-image"></i>
+                </div>
+            }
+
+        </div>
+
+        <div class="detail-list">
+
+            <div class="detail-item">
+
+                <span class="detail-label">
+                    Cliente
+                </span>
+
+                <span class="detail-value">
+                    @Model.NombreCliente
+                </span>
+
+            </div>
+
+            <div class="detail-item">
+
+                <span class="detail-label">
+                    Producto
+                </span>
+
+                <span class="detail-value">
+                    @Model.NombreProducto
+                </span>
+
+            </div>
+
+            <div class="detail-item">
+
+                <span class="detail-label">
+                    Cantidad
+                </span>
+
+                <span class="detail-value">
+                    @Model.Cantidad prendas
+                </span>
+
+            </div>
+
+            <div class="detail-item">
+
+                <span class="detail-label">
+                    Talla
+                </span>
+
+                <span class="detail-value">
+                    @Model.Talla
+                </span>
+
+            </div>
+
+            <div class="detail-item">
+
+                <span class="detail-label">
+                    Color
+                </span>
+
+                <span class="detail-value">
+                    @Model.Color
+                </span>
+
+            </div>
+
+            <div class="detail-item">
+
+                <span class="detail-label">
+                    Material
+                </span>
+
+                <span class="detail-value">
+                    @Model.Material
+                </span>
+
+            </div>
+
+            <div class="detail-item">
+
+                <span class="detail-label">
+                    Tipo de estampado
+                </span>
+
+                <span class="detail-value">
+                    @(string.IsNullOrWhiteSpace(Model.TipoEstampado)
+                        ? "No especificado"
+                        : Model.TipoEstampado)
+                </span>
+
+            </div>
+
+            <div class="detail-item">
+
+                <span class="detail-label">
+                    Fecha de registro
+                </span>
+
+                <span class="detail-value">
+                    @Model.FechaRegistro.ToString("dd/MM/yyyy HH:mm")
+                </span>
+
+            </div>
+
+            <div class="detail-item detail-item-full">
+
+                <span class="detail-label">
+                    Texto personalizado
+                </span>
+
+                <span class="detail-value">
+                    @(string.IsNullOrWhiteSpace(Model.TextoPersonalizado)
+                        ? "No registrado"
+                        : Model.TextoPersonalizado)
+                </span>
+
+            </div>
+
+            <div class="detail-item detail-item-full">
+
+                <span class="detail-label">
+                    Observaciones
+                </span>
+
+                <span class="detail-value">
+                    @(string.IsNullOrWhiteSpace(Model.Observaciones)
+                        ? "Sin observaciones"
+                        : Model.Observaciones)
+                </span>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="detail-actions">
+
+        <a asp-action="Index"
+           class="button-secondary">
+
+            <i class="bi bi-arrow-left"></i>
+            Volver
+
+        </a>
+
+        @if (puedeGestionar && Model.Estado == "PENDIENTE")
+        {
+            <form asp-controller="Cotizacion"
+                  asp-action="Generar"
+                  method="post">
+
+                @Html.AntiForgeryToken()
+
+                <input type="hidden"
+                       name="solicitudId"
+                       value="@Model.SolicitudId" />
+
+                <button type="submit"
+                        class="button-submit">
+
+                    <i class="bi bi-calculator-fill"></i>
+                    Generar cotización
+
+                </button>
+
+            </form>
+        }
+
+        @if (puedeGestionar && Model.Estado == "COTIZADA")
+        {
+            <form asp-action="ActualizarEstado"
+                  method="post">
+
+                @Html.AntiForgeryToken()
+
+                <input type="hidden"
+                       name="id"
+                       value="@Model.SolicitudId" />
+
+                <input type="hidden"
+                       name="estado"
+                       value="APROBADA" />
+
+                <button type="submit"
+                        class="button-submit">
+
+                    <i class="bi bi-check-circle-fill"></i>
+                    Aprobar solicitud
+
+                </button>
+
+            </form>
+        }
+
+    </div>
+
+</div>

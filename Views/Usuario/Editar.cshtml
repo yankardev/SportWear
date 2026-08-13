@@ -1,0 +1,14 @@
+@model SportWear.Web.ViewModels.UsuarioFormularioViewModel
+@{ ViewData["Title"] = "Editar usuario"; Layout = "_LayoutAdmin"; }
+@section Styles { <link rel="stylesheet" href="~/css/admin-crud.css" asp-append-version="true" /> }
+<div class="form-card"><div class="form-card-header"><h2 class="form-card-title">Editar usuario</h2><p class="form-card-description">Actualice los datos y permisos del usuario.</p></div><div class="form-card-body">
+<form asp-action="Editar" method="post">@Html.AntiForgeryToken()<input asp-for="UsuarioId" type="hidden" /><div asp-validation-summary="ModelOnly" class="form-validation"></div>
+<div class="form-grid">
+<div class="form-group"><label asp-for="Nombres" class="form-label"></label><input asp-for="Nombres" class="form-control-sport" /><span asp-validation-for="Nombres" class="form-validation"></span></div>
+<div class="form-group"><label asp-for="Apellidos" class="form-label"></label><input asp-for="Apellidos" class="form-control-sport" /><span asp-validation-for="Apellidos" class="form-validation"></span></div>
+<div class="form-group"><label asp-for="Correo" class="form-label"></label><input asp-for="Correo" class="form-control-sport" /><span asp-validation-for="Correo" class="form-validation"></span></div>
+<div class="form-group"><label asp-for="Telefono" class="form-label"></label><input asp-for="Telefono" class="form-control-sport" /></div>
+<div class="form-group"><label asp-for="RolId" class="form-label"></label><select asp-for="RolId" class="form-control-sport"><option value="">Seleccione un rol</option>@foreach (var rol in Model.Roles){<option value="@rol.RolId">@rol.Nombre</option>}</select><span asp-validation-for="RolId" class="form-validation"></span></div></div>
+<div class="form-group"><div class="switch-group"><input asp-for="Activo" class="switch-input" /><div class="switch-content"><strong>Activo</strong><span>Permite iniciar sesión en el sistema.</span></div></div></div>
+<div class="form-actions"><a asp-action="Index" class="button-secondary">Cancelar</a><button class="button-submit">Guardar cambios</button></div></form></div></div>
+@section Scripts { <partial name="_ValidationScriptsPartial" /> }

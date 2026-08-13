@@ -1,0 +1,112 @@
+﻿@model SportWear.Web.ViewModels.RegistroClienteViewModel
+
+@{
+    ViewData["Title"] = "Crear cuenta";
+    Layout = "_LayoutCliente";
+}
+
+@section Styles {
+    <link rel="stylesheet"
+          href="~/css/cliente-acceso.css"
+          asp-append-version="true" />
+}
+
+<section class="access-section">
+
+    <div class="access-card">
+
+        <div class="access-heading">
+            <span>SportWear</span>
+
+            <h1>Crear cuenta</h1>
+
+            <p>
+                Regístrate para consultar tus solicitudes
+                y realizar el seguimiento de tus pedidos.
+            </p>
+        </div>
+
+        <form asp-action="Registro"
+              method="post">
+
+            @Html.AntiForgeryToken()
+
+            <div asp-validation-summary="ModelOnly"
+                 class="validation-summary">
+            </div>
+
+            <div class="access-grid">
+
+                <div class="access-group">
+                    <label asp-for="Nombres">Nombres</label>
+                    <input asp-for="Nombres" />
+                    <span asp-validation-for="Nombres"></span>
+                </div>
+
+                <div class="access-group">
+                    <label asp-for="Apellidos">Apellidos</label>
+                    <input asp-for="Apellidos" />
+                    <span asp-validation-for="Apellidos"></span>
+                </div>
+
+                <div class="access-group">
+                    <label asp-for="Documento">Documento</label>
+                    <input asp-for="Documento" />
+                    <span asp-validation-for="Documento"></span>
+                </div>
+
+                <div class="access-group">
+                    <label asp-for="Telefono">Teléfono</label>
+                    <input asp-for="Telefono" />
+                    <span asp-validation-for="Telefono"></span>
+                </div>
+
+                <div class="access-group access-full">
+                    <label asp-for="Correo">Correo</label>
+                    <input asp-for="Correo"
+                           type="email" />
+                    <span asp-validation-for="Correo"></span>
+                </div>
+
+                <div class="access-group">
+                    <label asp-for="Clave">Contraseña</label>
+                    <input asp-for="Clave"
+                           type="password" />
+                    <span asp-validation-for="Clave"></span>
+                </div>
+
+                <div class="access-group">
+                    <label asp-for="ConfirmarClave">
+                        Confirmar contraseña
+                    </label>
+
+                    <input asp-for="ConfirmarClave"
+                           type="password" />
+
+                    <span asp-validation-for="ConfirmarClave"></span>
+                </div>
+
+            </div>
+
+            <button type="submit"
+                    class="access-button">
+                Crear cuenta
+            </button>
+
+        </form>
+
+        <div class="access-footer">
+            ¿Ya tienes una cuenta?
+
+            <a asp-action="Login">
+                Iniciar sesión
+            </a>
+        </div>
+
+    </div>
+
+</section>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

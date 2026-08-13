@@ -1,0 +1,241 @@
+﻿@model SportWear.Web.ViewModels.LoginViewModel
+
+@{
+    ViewData["Title"] = "Iniciar sesión";
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Iniciar sesión | SportWear</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap"  rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
+    <link rel="stylesheet" href="~/css/login.css" asp-append-version="true" />
+</head>
+
+<body>
+
+    <main class="login-page">
+        <!-- Panel visual deportivo -->
+        <section class="login-hero">
+            <div class="hero-content">
+                <div class="brand">
+                    <div class="brand-mark">
+                        S
+                    </div>
+
+                    <span class="brand-name">
+                        SPORTWEAR
+                    </span>
+                </div>
+
+                <span class="hero-label">
+                    Rendimiento · Estilo · Identidad
+                </span>
+
+                <h1 class="hero-title">
+                    Viste tu pasión.
+                    <span>Supera tus límites.</span>
+                </h1>
+
+                <p class="hero-description">
+                    Gestiona productos deportivos, pedidos y prendas
+                    personalizadas desde una plataforma moderna,
+                    rápida y segura.
+                </p>
+
+                <div class="hero-features">
+
+                    <div class="hero-feature">
+                        <i class="bi bi-bag-check-fill"></i>
+                        Catálogo deportivo
+                    </div>
+
+                    <div class="hero-feature">
+                        <i class="bi bi-magic"></i>
+                        Diseños personalizados
+                    </div>
+
+                    <div class="hero-feature">
+                        <i class="bi bi-file-earmark-pdf-fill"></i>
+                        Cotización inmediata
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+        <!-- Panel del formulario -->
+        <section class="login-panel">
+
+            <div class="login-container">
+                <a asp-controller="Catalogo"  asp-action="Index"  class="back-catalog-link">
+                    <i class="bi bi-arrow-left"></i>
+                    Volver al catálogo
+                </a>
+                <div class="mobile-brand">
+                    <div class="brand-mark">
+                        S
+                    </div>
+
+                    <span class="brand-name">
+                        SPORTWEAR
+                    </span>
+                </div>
+
+                <div class="login-heading">
+                    <h1>Bienvenido</h1>
+
+                    <p>
+                        Ingresa tus credenciales para acceder
+                        a la plataforma.
+                    </p>
+                </div>
+
+                <form asp-controller="Auth"
+                      asp-action="Login"
+                      method="post"
+                      class="login-form">
+
+                    @Html.AntiForgeryToken()
+
+                    <div asp-validation-summary="ModelOnly"></div>
+
+                    <div class="form-group">
+
+                        <label asp-for="Correo">
+                            Correo electrónico
+                        </label>
+
+                        <div class="input-wrapper">
+
+                            <i class="bi bi-envelope input-icon"></i>
+
+                            <input asp-for="Correo"
+                                   class="login-input"
+                                   placeholder="nombre@correo.com"
+                                   autocomplete="email" />
+
+                        </div>
+
+                        <span asp-validation-for="Correo"
+                              class="validation-message">
+                        </span>
+
+                    </div>
+
+                    <div class="form-group">
+
+                        <label asp-for="Clave">
+                            Contraseña
+                        </label>
+
+                        <div class="input-wrapper">
+
+                            <i class="bi bi-lock input-icon"></i>
+
+                            <input asp-for="Clave"
+                                   id="inputClave"
+                                   class="login-input"
+                                   placeholder="Ingresa tu contraseña"
+                                   autocomplete="current-password" />
+
+                            <button type="button"
+                                    class="password-toggle"
+                                    id="btnMostrarClave"
+                                    aria-label="Mostrar contraseña">
+
+                                <i class="bi bi-eye"
+                                   id="iconoClave"></i>
+
+                            </button>
+
+                        </div>
+
+                        <span asp-validation-for="Clave"
+                              class="validation-message">
+                        </span>
+
+                    </div>
+
+                    <div class="login-options">
+
+                        <label class="remember-option">
+                            <input type="checkbox" />
+                            Recordar sesión
+                        </label>
+
+                        <a href="#"
+                           class="recovery-link">
+                            ¿Olvidaste tu contraseña?
+                        </a>
+
+                    </div>
+
+                    <button type="submit"
+                            class="login-button">
+
+                        <i class="bi bi-box-arrow-in-right"></i>
+                        Iniciar sesión
+
+                    </button>
+
+                </form>
+
+                <div class="demo-access">
+
+                    <div class="demo-access-title">
+                        Acceso de demostración
+                    </div>
+
+                    <p>
+                        <strong>Administrador:</strong>
+                        admin@sportwear.com
+                    </p>
+
+                    <p>
+                        <strong>Contraseña:</strong>
+                        Admin123*
+                    </p>
+
+                </div>
+
+                <div class="login-footer">
+                    © 2026 <strong>SportWear</strong>.
+                    Plataforma de gestión deportiva.
+                </div>
+
+            </div>
+
+        </section>
+
+    </main>
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
+    <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
+
+    <script>
+        const botonClave = document.getElementById("btnMostrarClave");
+        const inputClave = document.getElementById("inputClave");
+        const iconoClave = document.getElementById("iconoClave");
+
+        botonClave.addEventListener("click", function () {
+        const oculto = inputClave.type === "password";
+
+        inputClave.type = oculto ? "text" : "password";
+
+        iconoClave.classList.toggle("bi-eye", !oculto);
+        iconoClave.classList.toggle("bi-eye-slash", oculto);
+        });
+    </script>
+
+</body>
+</html>

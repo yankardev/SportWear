@@ -1,0 +1,326 @@
+﻿@{
+    string nombreUsuario =
+        Context.Session.GetString("NombreUsuario")
+        ?? "Administrador";
+
+    string inicial = !string.IsNullOrWhiteSpace(nombreUsuario)
+        ? nombreUsuario.Substring(0, 1).ToUpper()
+        : "A";
+
+    string rolUsuario = Context.Session.GetString("Rol") ?? "";
+    bool esAdministrador = rolUsuario == "ADMINISTRADOR";
+    bool esVentas = rolUsuario == "VENTAS";
+    bool esProduccion = rolUsuario == "PRODUCCION";
+    string controladorActual =ViewContext.RouteData.Values["controller"]?.ToString() ?? string.Empty;
+}
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8" />
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0" />
+
+    <title>@ViewData["Title"] | SportWear</title>
+
+    <link rel="preconnect"
+          href="https://fonts.googleapis.com" />
+
+    <link rel="preconnect"
+          href="https://fonts.gstatic.com"
+          crossorigin />
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap"
+          rel="stylesheet" />
+
+    <link rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
+
+    <link rel="stylesheet"
+          href="~/css/admin-layout.css"
+          asp-append-version="true" />
+
+    @await RenderSectionAsync("Styles", required: false)
+</head>
+
+<body>
+
+    <div class="admin-layout">
+
+        <!-- MENÚ LATERAL -->
+        <aside class="admin-sidebar" id="adminSidebar">
+            <div class="sidebar-brand">
+                <div class="sidebar-logo">
+                    S
+                </div>
+                <div>
+                    <div class="sidebar-brand-name">
+                        SPORTWEAR
+                    </div>
+                    <div class="sidebar-brand-caption">
+                        Gestión deportiva
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="sidebar-section-title">
+                Principal
+            </div>
+
+            <nav class="sidebar-menu">
+                <a asp-controller="Administracion" asp-action="Index"
+                   class="sidebar-link @(controladorActual == "Administracion" ? "active" : "")">
+                    <i class="bi bi-grid-1x2-fill"></i>
+                    <span>Dashboard</span>
+                </a>
+
+            </nav>
+            <div class="sidebar-section-title">
+                Catálogo
+            </div>
+
+            <nav class="sidebar-menu">
+
+                @if (esAdministrador || esVentas)
+                {
+                    <a asp-controller="Producto"
+                       asp-action="Index"
+                       class="sidebar-link @(controladorActual == "Producto" ? "active" : "")">
+                        <i class="bi bi-bag-fill"></i>
+                        <span>Productos</span>
+                    </a>
+                }
+
+                @if (esAdministrador)
+                {
+                    <a asp-controller="Categoria"
+                       asp-action="Index"
+                       class="sidebar-link @(controladorActual == "Categoria" ? "active" : "")">
+                        <i class="bi bi-tags-fill"></i>
+                        <span>Categorías</span>
+                    </a>
+                }
+
+                <a asp-controller="SolicitudConfeccion"
+                   asp-action="Index"
+                   class="sidebar-link @(controladorActual == "SolicitudConfeccion" ? "active" : "")">
+                    <i class="bi bi-scissors"></i>
+                    <span>Confección</span>
+                </a>
+
+            </nav>
+
+            <div class="sidebar-section-title">
+                Pedidos
+            </div>
+
+            <nav class="sidebar-menu">
+
+                <a asp-controller="Pedido"
+                   asp-action="Index"
+                   class="sidebar-link @(controladorActual == "Pedido" ? "active" : "")">
+                    <i class="bi bi-box-seam-fill"></i>
+                    <span>Pedidos</span>
+                </a>
+
+                @if (esAdministrador || esVentas)
+                {
+                    <a asp-controller="Venta"
+                       asp-action="Index"
+                       class="sidebar-link @(controladorActual == "Venta" ? "active" : "")">
+                        <i class="bi bi-cart-check-fill"></i>
+                        <span>Ventas directas</span>
+                    </a>
+
+                    <a asp-controller="Cotizacion"
+                       asp-action="Index"
+                       class="sidebar-link @(controladorActual == "Cotizacion" ? "active" : "")">
+                        <i class="bi bi-file-earmark-text-fill"></i>
+                        <span>Cotizaciones</span>
+                    </a>
+
+                    <a asp-controller="Cliente"
+                       asp-action="Index"
+                       class="sidebar-link @(controladorActual == "Cliente" ? "active" : "")">
+                        <i class="bi bi-people-fill"></i>
+                        <span>Clientes</span>
+                    </a>
+                }
+
+            </nav>
+
+            @if (esAdministrador)
+            {
+                <div class="sidebar-section-title">
+                    Administración
+                </div>
+
+                <nav class="sidebar-menu">
+
+                    <a asp-controller="Reporte"
+                       asp-action="Index"
+                       class="sidebar-link @(controladorActual == "Reporte" ? "active" : "")">
+                        <i class="bi bi-bar-chart-fill"></i>
+                        <span>Reportes</span>
+                    </a>
+
+                    <a asp-controller="Usuario"
+                       asp-action="Index"
+                       class="sidebar-link @(controladorActual == "Usuario" ? "active" : "")">
+                        <i class="bi bi-person-gear"></i>
+                        <span>Usuarios</span>
+                    </a>
+
+                </nav>
+            }
+
+            <div class="sidebar-spacer"></div>
+            <div class="sidebar-user">
+                <div class="sidebar-user-info">
+                    <div class="sidebar-avatar">
+                        @inicial
+                    </div>
+                    <div class="sidebar-user-data">
+                        <p class="sidebar-user-name">
+                            @nombreUsuario
+                        </p>
+                        <p class="sidebar-user-role">
+                            @rolUsuario
+                        </p>
+                    </div>
+
+                </div>
+
+                <form asp-controller="Auth" asp-action="Logout" method="post">
+                    @Html.AntiForgeryToken()
+                    <button type="submit" class="logout-button">
+                        <i class="bi bi-box-arrow-left"></i>
+                        Cerrar sesión
+                    </button>
+                </form>
+            </div>
+        </aside>
+        <!-- CONTENIDO -->
+        <main class="admin-main">
+            <header class="admin-topbar">
+                <div class="topbar-left">
+                    <button type="button" class="mobile-menu-button" id="btnMenu">
+                        <i class="bi bi-list"></i>
+                    </button>
+                    <div>
+                        <h1 class="topbar-title">
+                            @ViewData["Title"]
+                        </h1>
+                        <p class="topbar-subtitle">
+                            Sistema de gestión comercial SportWear
+                        </p>
+
+                    </div>
+
+                </div>
+
+                <div class="topbar-actions">
+
+                    <button type="button" class="topbar-icon-button" title="Notificaciones">
+                        <i class="bi bi-bell-fill"></i>
+                        <span class="notification-dot"></span>
+                    </button>
+                    <div class="topbar-user">
+                        <div class="topbar-user-avatar">
+                            @inicial
+                        </div>
+                        <div>
+                            <strong>@nombreUsuario</strong>
+                            <span>@rolUsuario</span>
+                        </div>
+                    </div>
+                </div>
+            </header>
+            <section class="admin-content">
+                @if (TempData["Exito"] is not null)
+                {
+                    <div class="alert-message success-message">
+                        <i class="bi bi-check-circle-fill"></i>
+                        <span>
+                            @TempData["Exito"]
+                        </span>
+
+                    </div>
+                }
+
+                @if (TempData["Error"] is not null)
+                {
+                    <div class="alert-message error-message">
+
+                        <i class="bi bi-exclamation-triangle-fill"></i>
+
+                        <span>
+                            @TempData["Error"]
+                        </span>
+
+                    </div>
+                }
+
+                @RenderBody()
+
+            </section>
+
+            <footer class="admin-footer">
+
+                <span>
+                    © 2026 SportWear
+                </span>
+
+                <span>
+                    Versión 1.0
+                </span>
+
+            </footer>
+
+        </main>
+
+    </div>
+
+    <div class="sidebar-overlay"
+         id="sidebarOverlay">
+    </div>
+
+    <script>
+            const botonMenu =
+                document.getElementById("btnMenu");
+
+            const sidebar =
+                document.getElementById("adminSidebar");
+
+            const overlay =
+                document.getElementById("sidebarOverlay");
+
+            function alternarMenu() {
+                sidebar.classList.toggle("open");
+                overlay.classList.toggle("show");
+            }
+
+            if (botonMenu) {
+                botonMenu.addEventListener(
+                    "click",
+                    alternarMenu
+                );
+            }
+
+            if (overlay) {
+                overlay.addEventListener(
+                    "click",
+                    alternarMenu
+                );
+            }
+    </script>
+
+    @await RenderSectionAsync(
+        "Scripts",
+        required: false
+    )
+
+</body>
+</html>

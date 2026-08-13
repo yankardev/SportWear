@@ -1,0 +1,350 @@
+﻿@model SportWear.Web.ViewModels.MiCuentaClienteViewModel
+
+@{
+    ViewData["Title"] = "Mi cuenta";
+    Layout = "_LayoutCliente";
+}
+
+@section Styles {
+    <link rel="stylesheet"
+          href="~/css/mi-cuenta.css"
+          asp-append-version="true" />
+}
+
+<section class="account-section">
+
+    <div class="account-heading">
+
+        <span>Mi cuenta</span>
+
+        <h1>
+            Hola, @Model.NombreCompleto
+        </h1>
+
+        <p>
+            Consulta tus compras de tienda, solicitudes,
+            cotizaciones y pedidos personalizados.
+        </p>
+
+    </div>
+
+    <div class="account-summary">
+
+        <div class="summary-card">
+            <span>Solicitudes</span>
+
+            <strong>
+                @Model.Solicitudes.Count
+            </strong>
+        </div>
+
+        <div class="summary-card">
+            <span>Cotizaciones</span>
+
+            <strong>
+                @Model.Cotizaciones.Count
+            </strong>
+        </div>
+
+        <div class="summary-card">
+            <span>Pedidos personalizados</span>
+            <strong>@Model.Pedidos.Count</strong>
+        </div>
+
+        <div class="summary-card">
+            <span>Compras de tienda</span>
+            <strong>@Model.Ventas.Count</strong>
+        </div>
+
+    </div>
+
+    <section class="account-block" id="compras">
+
+        <h2>Mis compras de tienda</h2>
+
+        @if (!Model.Ventas.Any())
+        {
+            <div class="empty-data">
+                Todavía no tienes compras de venta directa.
+            </div>
+        }
+        else
+        {
+            <div class="table-container">
+                <table class="account-table">
+                    <thead>
+                        <tr>
+                            <th>Código</th>
+                            <th>Fecha</th>
+                            <th>Total</th>
+                            <th>Estado</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model.Ventas)
+                        {
+                            <tr>
+                                <td><strong>@item.Codigo</strong></td>
+                                <td>@item.FechaVenta.ToString("dd/MM/yyyy")</td>
+                                <td>S/ @item.Total.ToString("N2")</td>
+                                <td><span class="status-badge">@item.Estado</span></td>
+                                <td>
+                                    <a asp-controller="Carrito"
+                                       asp-action="Confirmacion"
+                                       asp-route-id="@item.VentaId">
+                                        Ver
+                                    </a>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
+
+    </section>
+
+    <section class="account-block">
+
+        <h2>
+            Mis solicitudes
+        </h2>
+
+        @if (!Model.Solicitudes.Any())
+        {
+            <div class="empty-data">
+                Todavía no tienes solicitudes registradas.
+            </div>
+        }
+        else
+        {
+            <div class="table-container">
+
+                <table class="account-table">
+
+                    <thead>
+                        <tr>
+                            <th>Producto</th>
+                            <th>Cantidad</th>
+                            <th>Fecha</th>
+                            <th>Estado</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+
+                        @foreach (var item in Model.Solicitudes)
+                        {
+                            <tr>
+                                <td>
+                                    @item.NombreProducto
+                                </td>
+
+                                <td>
+                                    @item.Cantidad
+                                </td>
+
+                                <td>
+                                    @item.FechaRegistro.ToString(
+                                        "dd/MM/yyyy"
+                                    )
+                                </td>
+
+                                <td>
+                                    <span class="status-badge">
+                                        @item.Estado
+                                    </span>
+                                </td>
+                            </tr>
+                        }
+
+                    </tbody>
+
+                </table>
+
+            </div>
+        }
+
+    </section>
+
+    <section class="account-block" id="cotizaciones">
+
+        <h2>
+            Mis cotizaciones
+        </h2>
+
+        @if (!Model.Cotizaciones.Any())
+        {
+            <div class="empty-data">
+                Aún no tienes cotizaciones emitidas.
+            </div>
+        }
+        else
+        {
+            <div class="table-container">
+
+                <table class="account-table">
+
+                    <thead>
+                        <tr>
+                            <th>Código</th>
+                            <th>Producto</th>
+                            <th>Total</th>
+                            <th>Estado</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+
+                        @foreach (var item in Model.Cotizaciones)
+                        {
+                            <tr>
+                                <td>
+                                    @item.Codigo
+                                </td>
+
+                                <td>
+                                    @item.NombreProducto
+                                </td>
+
+                                <td>
+                                    S/ @item.Total.ToString("N2")
+                                </td>
+
+                                <td>
+                                    <span class="status-badge">
+                                        @item.Estado
+                                    </span>
+                                </td>
+
+                                <td>
+                                    @{
+                                        var pedidoDeCotizacion = Model.Pedidos
+                                            .FirstOrDefault(p => p.CotizacionId == item.CotizacionId);
+                                    }
+
+                                    <div class="account-actions">
+                                        <a asp-controller="ClientePortal"
+                                           asp-action="DescargarCotizacion"
+                                           asp-route-id="@item.CotizacionId"
+                                           class="account-action-secondary">
+                                            <i class="bi bi-file-earmark-pdf"></i>
+                                            PDF
+                                        </a>
+
+                                        @if (pedidoDeCotizacion is null)
+                                        {
+                                            <a asp-controller="ClientePortal"
+                                               asp-action="IniciarPedido"
+                                               asp-route-cotizacionId="@item.CotizacionId"
+                                               class="account-action-primary">
+                                                <i class="bi bi-check-circle"></i>
+                                                Iniciar pedido
+                                            </a>
+                                        }
+                                        else
+                                        {
+                                            <a href="#pedidos"
+                                               class="account-action-complete">
+                                                <i class="bi bi-box-seam"></i>
+                                                Pedido iniciado
+                                            </a>
+                                        }
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+
+                    </tbody>
+
+                </table>
+
+            </div>
+        }
+
+    </section>
+
+    <section class="account-block" id="pedidos">
+
+        <h2>
+            Mis pedidos
+        </h2>
+
+        @if (!Model.Pedidos.Any())
+        {
+            <div class="empty-data">
+                Todavía no tienes pedidos registrados.
+            </div>
+        }
+        else
+        {
+            <div class="table-container">
+
+                <table class="account-table">
+
+                    <thead>
+                        <tr>
+                            <th>Código</th>
+                            <th>Producto</th>
+                            <th>Fecha</th>
+                            <th>Total</th>
+                            <th>Estado</th>
+                            <th>Cotización</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+
+                        @foreach (var item in Model.Pedidos)
+                        {
+                            <tr>
+
+                                <td>
+                                    @item.Codigo
+                                </td>
+
+                                <td>
+                                    @item.NombreProducto
+                                </td>
+
+                                <td>
+                                    @item.FechaPedido.ToString(
+                                        "dd/MM/yyyy"
+                                    )
+                                </td>
+
+                                <td>
+                                    S/ @item.Total.ToString("N2")
+                                </td>
+
+                                <td>
+                                    <span class="status-badge">
+                                        @item.NombreEstado
+                                    </span>
+                                </td>
+
+                                <td>
+                                    <a asp-controller="ClientePortal"
+                                       asp-action="DescargarCotizacion"
+                                       asp-route-id="@item.CotizacionId"
+                                       class="account-action-secondary">
+                                        <i class="bi bi-file-earmark-pdf"></i>
+                                        Descargar
+                                    </a>
+                                </td>
+
+                            </tr>
+                        }
+
+                    </tbody>
+
+                </table>
+
+            </div>
+        }
+
+    </section>
+
+</section>

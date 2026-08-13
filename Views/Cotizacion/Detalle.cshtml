@@ -1,0 +1,398 @@
+﻿@model SportWear.Web.Models.Cotizacion
+
+@{
+    ViewData["Title"] = "Detalle de cotización";
+    Layout = "_LayoutAdmin";
+
+    decimal adicionalUnitario = (Model.TipoEstampado ?? "").Trim().ToUpperInvariant() switch
+    {
+        "SUBLIMACIÓN" => 8.00m,
+        "SERIGRAFÍA" => 5.00m,
+        "BORDADO" => 10.00m,
+        _ => 0.00m
+    };
+
+    decimal precioBaseUnitario = Math.Max(Model.PrecioUnitario - adicionalUnitario, 0);
+    decimal importeBase = precioBaseUnitario * Model.Cantidad;
+    decimal importeAdicional = adicionalUnitario * Model.Cantidad;
+    decimal importeBruto = Model.PrecioUnitario * Model.Cantidad;
+    decimal descuentoMonto = Math.Max(importeBruto - Model.Subtotal, 0);
+}
+
+@section Styles { <link rel="stylesheet"  href="~/css/admin-crud.css" asp-append-version="true" />}
+
+<div class="quote-detail-card">
+
+    <header class="quote-detail-header">
+
+        <div>
+
+            <span class="quote-detail-code">
+                @Model.Codigo
+            </span>
+
+            <h2 class="quote-detail-title">
+                Cotización comercial
+            </h2>
+
+            <p class="quote-detail-subtitle">
+                Presupuesto generado para @Model.NombreCliente
+            </p>
+
+        </div>
+
+        <div class="quote-header-right">
+
+            <span class="badge-status badge-active">
+                <i class="bi bi-file-earmark-check-fill"></i>
+                @Model.Estado
+            </span>
+
+            <span class="quote-date">
+                Emitida el @Model.FechaEmision.ToString("dd/MM/yyyy")
+            </span>
+
+        </div>
+
+    </header>
+
+    <section class="quote-client-section">
+
+        <div class="quote-section-title">
+
+            <i class="bi bi-person-fill"></i>
+
+            <span>Datos del cliente</span>
+
+        </div>
+
+        <div class="quote-client-grid">
+
+            <div class="quote-info-item">
+
+                <span class="quote-info-label">
+                    Cliente
+                </span>
+
+                <strong>
+                    @Model.NombreCliente
+                </strong>
+
+            </div>
+
+            <div class="quote-info-item">
+
+                <span class="quote-info-label">
+                    Documento
+                </span>
+
+                <strong>
+                    @(string.IsNullOrWhiteSpace(Model.Documento)
+                        ? "No registrado"
+                        : Model.Documento)
+                </strong>
+
+            </div>
+
+            <div class="quote-info-item">
+
+                <span class="quote-info-label">
+                    Teléfono
+                </span>
+
+                <strong>
+                    @(string.IsNullOrWhiteSpace(Model.Telefono)
+                        ? "No registrado"
+                        : Model.Telefono)
+                </strong>
+
+            </div>
+
+            <div class="quote-info-item">
+
+                <span class="quote-info-label">
+                    Correo
+                </span>
+
+                <strong>
+                    @(string.IsNullOrWhiteSpace(Model.Correo)
+                        ? "No registrado"
+                        : Model.Correo)
+                </strong>
+
+            </div>
+
+        </div>
+
+    </section>
+
+    <section class="quote-product-section">
+
+        <div class="quote-section-title">
+
+            <i class="bi bi-bag-fill"></i>
+
+            <span>Detalle del producto</span>
+
+        </div>
+
+        <div class="quote-product-header">
+
+            <div class="quote-product-image">
+                @if (!string.IsNullOrWhiteSpace(ViewBag.ImagenProducto))
+                {
+                    <img src="@ViewBag.ImagenProducto"  alt="@Model.NombreProducto" />
+                }
+                else
+                {
+                    <div class="quote-product-icon">
+                        <i class="bi bi-image"></i>
+                    </div>
+                }
+
+            </div>
+
+            <div>
+
+                <h3>
+                    @Model.NombreProducto
+                </h3>
+
+                <p>
+                    Solicitud de confección personalizada
+                </p>
+
+            </div>
+
+        </div>
+
+        <div class="quote-specifications">
+
+            <div class="quote-spec-item">
+
+                <span>Cantidad</span>
+
+                <strong>
+                    @Model.Cantidad prendas
+                </strong>
+
+            </div>
+
+            <div class="quote-spec-item">
+
+                <span>Talla</span>
+
+                <strong>
+                    @(string.IsNullOrWhiteSpace(Model.Talla)
+                        ? "No especificada"
+                        : Model.Talla)
+                </strong>
+
+            </div>
+
+            <div class="quote-spec-item">
+
+                <span>Color</span>
+
+                <strong>
+                    @(string.IsNullOrWhiteSpace(Model.Color)
+                        ? "No especificado"
+                        : Model.Color)
+                </strong>
+
+            </div>
+
+            <div class="quote-spec-item">
+
+                <span>Material</span>
+
+                <strong>
+                    @(string.IsNullOrWhiteSpace(Model.Material)
+                        ? "No especificado"
+                        : Model.Material)
+                </strong>
+
+            </div>
+
+            <div class="quote-spec-item">
+
+                <span>Estampado</span>
+
+                <strong>
+                    @(string.IsNullOrWhiteSpace(Model.TipoEstampado)
+                        ? "Sin estampado"
+                        : Model.TipoEstampado)
+                </strong>
+
+            </div>
+
+            <div class="quote-spec-item">
+
+                <span>Texto</span>
+
+                <strong>
+                    @(string.IsNullOrWhiteSpace(Model.TextoPersonalizado)
+                        ? "Sin texto"
+                        : Model.TextoPersonalizado)
+                </strong>
+
+            </div>
+
+        </div>
+
+    </section>
+
+    <section class="quote-amount-section">
+
+        <div class="quote-section-title">
+
+            <i class="bi bi-calculator-fill"></i>
+
+            <span>Resumen económico</span>
+
+        </div>
+
+        <div class="quote-amount-layout">
+
+            <div class="quote-price-detail">
+
+                <div class="quote-price-row">
+                    <span>Precio base unitario</span>
+                    <strong>S/ @precioBaseUnitario.ToString("N2")</strong>
+                </div>
+
+                <div class="quote-price-row">
+                    <span>Adicional por @(string.IsNullOrWhiteSpace(Model.TipoEstampado) ? "estampado" : Model.TipoEstampado)</span>
+                    <strong>S/ @adicionalUnitario.ToString("N2") por prenda</strong>
+                </div>
+
+                <div class="quote-price-row">
+                    <span>Precio unitario final</span>
+                    <strong>S/ @Model.PrecioUnitario.ToString("N2")</strong>
+                </div>
+
+                <div class="quote-price-row">
+                    <span>Importe base (@Model.Cantidad prendas)</span>
+                    <strong>S/ @importeBase.ToString("N2")</strong>
+                </div>
+
+                <div class="quote-price-row">
+                    <span>Total adicional de estampado</span>
+                    <strong>S/ @importeAdicional.ToString("N2")</strong>
+                </div>
+
+                <div class="quote-price-row">
+                    <span>Importe antes de descuento</span>
+                    <strong>S/ @importeBruto.ToString("N2")</strong>
+                </div>
+
+                <div class="quote-price-row">
+                    <span>Descuento por volumen (@Model.DescuentoPorcentaje.ToString("N2") %)</span>
+                    <strong class="quote-discount">- S/ @descuentoMonto.ToString("N2")</strong>
+                </div>
+
+                <div class="quote-price-row">
+                    <span>Fecha de vencimiento</span>
+                    <strong>
+                        @(Model.FechaVencimiento.HasValue
+                            ? Model.FechaVencimiento.Value.ToString("dd/MM/yyyy")
+                            : "Sin vencimiento")
+                    </strong>
+                </div>
+
+                <small style="display:block;margin-top:12px;color:#64748b;line-height:1.5;">
+                    La regla de precio actual aplica recargo por tipo de estampado. Talla, color y material no generan recargo adicional.
+                </small>
+
+            </div>
+
+            <div class="quote-total-box">
+
+                <div class="quote-total-row">
+
+                    <span>Subtotal</span>
+
+                    <strong>
+                        S/ @Model.Subtotal.ToString("N2")
+                    </strong>
+
+                </div>
+
+                <div class="quote-total-row">
+
+                    <span>IGV (18 %)</span>
+
+                    <strong>
+                        S/ @Model.Igv.ToString("N2")
+                    </strong>
+
+                </div>
+
+                <div class="quote-grand-total">
+
+                    <span>Total</span>
+
+                    <strong>
+                        S/ @Model.Total.ToString("N2")
+                    </strong>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+    @if (!string.IsNullOrWhiteSpace(Model.Observaciones))
+    {
+        <section class="quote-observation">
+
+            <i class="bi bi-info-circle-fill"></i>
+
+            <div>
+
+                <strong>Observaciones</strong>
+
+                <p>
+                    @Model.Observaciones
+                </p>
+
+            </div>
+
+        </section>
+    }
+
+    <footer class="quote-detail-actions">
+
+        <a asp-action="Index"
+           class="button-secondary">
+
+            <i class="bi bi-arrow-left"></i>
+            Volver al listado
+
+        </a>
+
+        <a asp-controller="Pedido"
+           asp-action="Registrar"
+           asp-route-cotizacionId="@Model.CotizacionId"
+           class="button-submit">
+
+            <i class="bi bi-box-seam-fill"></i>
+            Generar pedido
+
+        </a>
+
+        <a asp-controller="Cotizacion"
+           asp-action="DescargarPdf"
+           asp-route-id="@Model.CotizacionId"
+           class="button-submit">
+
+            <i class="bi bi-file-earmark-pdf-fill"></i>
+            Descargar PDF
+
+        </a>
+
+    </footer>
+
+</div>

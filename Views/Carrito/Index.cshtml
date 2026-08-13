@@ -1,0 +1,109 @@
+﻿@model SportWear.Web.ViewModels.CarritoViewModel
+
+@{
+    ViewData["Title"] = "Carrito";
+    Layout = "_LayoutCliente";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/tienda.css" asp-append-version="true" />
+}
+
+<section class="shop-page">
+    <div class="shop-heading">
+        <div>
+            <span>Compra directa</span>
+            <h1>Tu carrito</h1>
+            <p>Revisa talla, cantidad y total antes de confirmar la compra.</p>
+        </div>
+        <a asp-controller="Catalogo" asp-action="Index" asp-fragment="productos" class="shop-link-secondary">
+            <i class="bi bi-arrow-left"></i>
+            Seguir comprando
+        </a>
+    </div>
+
+    @if (!Model.Items.Any())
+    {
+        <div class="shop-empty">
+            <i class="bi bi-cart-x"></i>
+            <h2>Tu carrito está vacío</h2>
+            <p>Agrega productos de venta directa desde el catálogo.</p>
+            <a asp-controller="Catalogo" asp-action="Index" asp-fragment="productos" class="shop-button-primary">
+                Ver catálogo
+            </a>
+        </div>
+    }
+    else
+    {
+        <div class="cart-layout">
+            <div class="cart-items">
+                @foreach (var item in Model.Items)
+                {
+                    <article class="cart-item">
+                        <div class="cart-image">
+                            @if (!string.IsNullOrWhiteSpace(item.ImagenUrl))
+                            {
+                                <img src="@item.ImagenUrl" alt="@item.Nombre" />
+                            }
+                            else
+                            {
+                                <i class="bi bi-image"></i>
+                            }
+                        </div>
+
+                        <div class="cart-info">
+                            <h3>@item.Nombre</h3>
+                            <span>S/ @item.PrecioUnitario.ToString("N2") c/u</span>
+                            <span class="cart-size">Talla: <strong>@item.Talla</strong></span>
+                            <small>Stock total disponible: @item.Stock</small>
+                        </div>
+
+                        <form asp-action="Actualizar" method="post" class="cart-quantity-form">
+                            @Html.AntiForgeryToken()
+                            <input type="hidden" name="productoId" value="@item.ProductoId" />
+                            <input type="hidden" name="talla" value="@item.Talla" />
+                            <input type="number" name="cantidad" value="@item.Cantidad" min="1" max="@item.Stock" />
+                            <button type="submit" title="Actualizar cantidad">
+                                <i class="bi bi-arrow-repeat"></i>
+                            </button>
+                        </form>
+
+                        <div class="cart-subtotal">
+                            <small>Subtotal</small>
+                            <strong>S/ @item.Subtotal.ToString("N2")</strong>
+                        </div>
+
+                        <form asp-action="Eliminar" method="post">
+                            @Html.AntiForgeryToken()
+                            <input type="hidden" name="productoId" value="@item.ProductoId" />
+                            <input type="hidden" name="talla" value="@item.Talla" />
+                            <button type="submit" class="cart-remove" title="Eliminar">
+                                <i class="bi bi-trash3"></i>
+                            </button>
+                        </form>
+                    </article>
+                }
+            </div>
+
+            <aside class="cart-summary">
+                <h2>Resumen</h2>
+                <div><span>Prendas</span><strong>@Model.CantidadTotal</strong></div>
+                <div><span>Subtotal</span><strong>S/ @Model.Subtotal.ToString("N2")</strong></div>
+                <div><span>IGV (18%)</span><strong>S/ @Model.Igv.ToString("N2")</strong></div>
+                <div class="cart-total"><span>Total</span><strong>S/ @Model.Total.ToString("N2")</strong></div>
+
+                <a asp-action="Checkout" class="shop-button-primary shop-button-block">
+                    Confirmar compra
+                    <i class="bi bi-arrow-right"></i>
+                </a>
+
+                <form asp-action="Vaciar" method="post">
+                    @Html.AntiForgeryToken()
+                    <button type="submit" class="shop-button-link" onclick="return confirm('¿Vaciar todo el carrito?');">
+                        Vaciar carrito
+                    </button>
+                </form>
+            </aside>
+        </div>
+    }
+</section>

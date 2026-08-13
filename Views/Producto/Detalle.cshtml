@@ -1,0 +1,199 @@
+﻿@model SportWear.Web.Models.Producto
+
+@{
+    ViewData["Title"] = "Detalle del producto";
+    Layout = "_LayoutAdmin";
+}
+
+@section Styles {
+    <link rel="stylesheet"
+          href="~/css/admin-crud.css"
+          asp-append-version="true" />
+}
+
+<div class="detail-card">
+
+    <div class="detail-header">
+
+        <div>
+
+            <h2 class="detail-title">
+                @Model.Nombre
+            </h2>
+
+            <p class="detail-subtitle">
+                Información completa del producto
+                N.° @Model.ProductoId
+            </p>
+
+        </div>
+
+        @if (Model.Activo)
+        {
+            <span class="badge-status badge-active">
+                <i class="bi bi-check-circle-fill"></i>
+                Activo
+            </span>
+        }
+        else
+        {
+            <span class="badge-status badge-inactive">
+                <i class="bi bi-x-circle-fill"></i>
+                Inactivo
+            </span>
+        }
+
+    </div>
+
+    <div class="detail-body">
+
+        <div class="detail-image-wrapper">
+
+            @if (!string.IsNullOrWhiteSpace(Model.ImagenUrl))
+            {
+                <img src="@Model.ImagenUrl"
+                     alt="@Model.Nombre"
+                     class="detail-image"
+                     onerror="this.style.display='none'; this.nextElementSibling.style.display='block';" />
+
+                <i class="bi bi-image detail-image-placeholder"
+                   style="display:none;">
+                </i>
+            }
+            else
+            {
+                <i class="bi bi-image detail-image-placeholder"></i>
+            }
+
+        </div>
+
+        <div class="detail-list">
+
+            <div class="detail-item">
+
+                <span class="detail-label">
+                    Categoría
+                </span>
+
+                <span class="detail-value">
+                    @Model.NombreCategoria
+                </span>
+
+            </div>
+
+            <div class="detail-item">
+
+                <span class="detail-label">
+                    Precio base
+                </span>
+
+                <span class="detail-value price-text">
+                    S/ @Model.PrecioBase.ToString("N2")
+                </span>
+
+            </div>
+
+            <div class="detail-item">
+
+                <span class="detail-label">
+                    Tipo de producto
+                </span>
+
+                <span class="detail-value">
+
+                    @if (Model.Personalizable)
+                    {
+                        <span class="badge-status badge-custom">
+                            <i class="bi bi-magic"></i>
+                            Personalizable
+                        </span>
+                    }
+                    else
+                    {
+                        <span class="badge-status badge-standard">
+                            <i class="bi bi-bag"></i>
+                            Estándar
+                        </span>
+                    }
+
+                </span>
+
+            </div>
+
+
+            @if (!Model.Personalizable)
+            {
+                <div class="detail-item">
+                    <span class="detail-label">Stock disponible</span>
+                    <span class="detail-value"><strong>@Model.Stock unidades</strong></span>
+                </div>
+            }
+
+            <div class="detail-item">
+
+                <span class="detail-label">
+                    Fecha de registro
+                </span>
+
+                <span class="detail-value">
+                    @Model.FechaRegistro.ToString("dd/MM/yyyy HH:mm")
+                </span>
+
+            </div>
+
+            <div class="detail-item detail-item-full">
+
+                <span class="detail-label">
+                    Descripción
+                </span>
+
+                <span class="detail-value">
+                    @(string.IsNullOrWhiteSpace(Model.Descripcion)
+                        ? "El producto no tiene una descripción registrada."
+                        : Model.Descripcion)
+                </span>
+
+            </div>
+
+            <div class="detail-item detail-item-full">
+
+                <span class="detail-label">
+                    Ruta de imagen
+                </span>
+
+                <span class="detail-value">
+                    @(string.IsNullOrWhiteSpace(Model.ImagenUrl)
+                        ? "Sin imagen asignada"
+                        : Model.ImagenUrl)
+                </span>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="detail-actions">
+
+        <a asp-controller="Producto"
+           asp-action="Index"
+           class="button-secondary">
+
+            <i class="bi bi-arrow-left"></i>
+            Volver al listado
+
+        </a>
+
+        <a asp-controller="Producto"
+           asp-action="Editar"
+           asp-route-id="@Model.ProductoId"
+           class="button-submit">
+
+            <i class="bi bi-pencil-fill"></i>
+            Editar producto
+
+        </a>
+
+    </div>
+
+</div>

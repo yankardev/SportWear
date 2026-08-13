@@ -1,0 +1,42 @@
+SPORTWEAR - CAMBIOS FINALES
+
+1. VENTA DIRECTA
+- Selección obligatoria de talla con botones: S, M, L, XL.
+- Selector de cantidad con botones - y +.
+- El carrito diferencia el mismo producto por talla.
+- La talla se guarda en VentaDetalle.
+- Checkout, confirmación y detalle administrativo muestran la talla.
+- El stock sigue siendo general por producto para no ampliar el modelo a stock por talla.
+
+2. CATÁLOGO
+- Se corrigió la distribución visual entre precio y botón "Ver producto".
+- Precio y botón ya no deben partirse en dos líneas en tarjetas normales.
+
+3. COTIZACIÓN / PDF
+El cálculo actual de la base de datos es:
+- Sublimación: + S/ 8.00 por prenda.
+- Serigrafía: + S/ 5.00 por prenda.
+- Bordado: + S/ 10.00 por prenda.
+- Sin estampado: + S/ 0.00.
+- Desde 20 prendas: descuento 5%.
+- Desde 50 prendas: descuento 10%.
+- IGV: 18% después del descuento.
+
+El PDF ahora muestra:
+- precio base unitario;
+- recargo unitario de estampado;
+- importe base;
+- total adicional de estampado;
+- importe antes de descuento;
+- descuento por volumen en soles y porcentaje;
+- subtotal;
+- IGV;
+- total final.
+
+IMPORTANTE
+La lógica actual NO aplica recargos adicionales por talla, color ni material. Esos datos son especificaciones de confección. El PDF lo aclara expresamente para que el cliente entienda por qué el precio base cambia al formalizarse.
+
+SQL A EJECUTAR SOBRE TU BASE ACTUAL:
+SQL/05_Tallas_VentaDirecta_Final.sql
+
+No vuelvas a ejecutar los scripts anteriores si tu base ya está funcionando.

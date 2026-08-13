@@ -1,0 +1,13 @@
+SPORTWEAR - 10 PRODUCTOS DE VENTA DIRECTA
+
+Las imágenes ya están dentro del proyecto:
+wwwroot/img/catalogo/
+
+Para agregarlas a tu SportWearDB actual:
+1. Ejecuta SQL/04_Productos_Catalogo_Imagenes.sql
+2. Reinicia la aplicación
+3. Entra a Catálogo
+
+El script registra 10 productos con Personalizable = 0,
+precio fijo, stock e imágenes locales.
+No modifica los productos personalizados.

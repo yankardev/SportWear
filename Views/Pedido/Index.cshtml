@@ -1,0 +1,91 @@
+@model List<SportWear.Web.Models.Pedido>
+
+@{
+    ViewData["Title"] = "Pedidos";
+    Layout = "_LayoutAdmin";
+    string? buscar = ViewBag.Buscar as string;
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/admin-crud.css" asp-append-version="true" />
+}
+
+<div class="crud-header">
+    <div>
+        <h2 class="crud-title">Pedidos</h2>
+        <p class="crud-description">Controle los pedidos generados desde las cotizaciones aprobadas.</p>
+    </div>
+</div>
+
+<section class="crud-card">
+    <div class="crud-toolbar">
+        <form asp-action="Index" method="get" class="crud-search-form">
+            <div class="crud-search-wrapper">
+                <i class="bi bi-search crud-search-icon"></i>
+                <input type="text" name="buscar" value="@buscar" class="crud-search-input"
+                       placeholder="Código, cliente, producto o estado..." />
+            </div>
+            <button class="crud-search-button">Buscar</button>
+        </form>
+    </div>
+
+    <div class="crud-table-container">
+        <table class="crud-table">
+            <thead>
+                <tr>
+                    <th>Código</th>
+                    <th>Cliente</th>
+                    <th>Producto</th>
+                    <th>Fecha</th>
+                    <th>Total</th>
+                    <th>Estado</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (Model.Count == 0)
+                {
+                    <tr><td colspan="7" style="text-align:center;padding:35px;">No se encontraron pedidos.</td></tr>
+                }
+                else
+                {
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td><strong>@item.Codigo</strong></td>
+                            <td>@item.NombreCliente</td>
+                            <td>@item.NombreProducto</td>
+                            <td>@item.FechaPedido.ToString("dd/MM/yyyy")</td>
+                            <td><strong>S/ @item.Total.ToString("N2")</strong></td>
+                            @{
+                                string estado = (item.NombreEstado ?? "").Trim().ToUpper();
+
+                                string claseEstado = estado switch
+                                {
+                                    "APROBADO" => "badge-aprobado",
+                                    "DISEÑO" => "badge-diseno",
+                                    "CONFECCION" => "badge-confeccion",
+                                    "LISTO" => "badge-listo",
+                                    "ENTREGADO" => "badge-entregado",
+                                    _ => "badge-standard"
+                                };
+                            }
+
+                            <td>
+                                <span class="badge-status @claseEstado">
+                                    @item.NombreEstado
+                                </span>
+                            </td>
+                            <td>
+                                <a asp-action="Detalle" asp-route-id="@item.PedidoId"
+                                   class="action-button action-details" title="Ver detalle">
+                                    <i class="bi bi-eye-fill"></i>
+                                </a>
+                            </td>
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table>
+    </div>
+</section>

@@ -1,0 +1,195 @@
+﻿@model SportWear.Web.ViewModels.SolicitudConfeccionFormularioViewModel
+
+@{
+    ViewData["Title"] = "Nueva Solicitud";
+    Layout = "_LayoutAdmin";
+}
+
+@section Styles { <link rel="stylesheet" href="~/css/admin-crud.css" asp-append-version="true" />}
+
+<div class="form-card">
+    <div class="form-card-header">
+        <h2 class="form-card-title">
+            Solicitud de Confección
+        </h2>
+        <p class="form-card-description">
+            Registre la solicitud personalizada del cliente.
+        </p>
+
+    </div>
+
+    <div class="form-card-body">
+        <form asp-action="Registrar" method="post">
+            @Html.AntiForgeryToken()
+            <div asp-validation-summary="ModelOnly"
+                 class="text-danger mb-3"></div>
+            <div class="form-grid">
+                <!-- CLIENTE -->
+                <div class="form-group">
+                    <label asp-for="Solicitud.ClienteId"  class="form-label"></label>
+
+                    <select asp-for="Solicitud.ClienteId"  class="form-control-sport">
+                        <option value="">
+                            -- Seleccione --
+                        </option>
+                        @foreach (var c in Model.Clientes)
+                        {
+                            <option value="@c.ClienteId">
+                                @c.Nombres @c.Apellidos
+                            </option>
+                        }
+                    </select>
+                </div>
+                <!-- PRODUCTO -->
+                <div class="form-group">
+                    <label asp-for="Solicitud.ProductoId" class="form-label"></label>
+                    <select asp-for="Solicitud.ProductoId" class="form-control-sport">
+                        <option value="">
+                            -- Seleccione --
+                        </option>
+                        @foreach (var p in Model.Productos)
+                        {
+                            <option value="@p.ProductoId">
+                                @p.Nombre
+                            </option>
+                        }
+
+                    </select>
+
+                </div>
+
+                <!-- CANTIDAD -->
+
+                <div class="form-group">
+
+                    <label asp-for="Solicitud.Cantidad"></label>
+
+                    <input asp-for="Solicitud.Cantidad"
+                           class="form-control-sport" />
+
+                </div>
+
+                <!-- TALLA -->
+
+                <div class="form-group">
+
+                    <label asp-for="Solicitud.Talla"></label>
+
+                    <select asp-for="Solicitud.Talla"
+                            class="form-control-sport">
+
+                        <option>S</option>
+                        <option>M</option>
+                        <option>L</option>
+                        <option>XL</option>
+
+                    </select>
+
+                </div>
+
+                <!-- COLOR -->
+                <div class="form-group">
+
+                    <label asp-for="Solicitud.Color"></label>
+                    <select asp-for="Solicitud.Color" class="form-select">
+                        <option value="">-- Seleccione --</option>
+                        <option value="Negro">Negro</option>
+                        <option value="Blanco">Blanco</option>
+                        <option value="Azul marino">Azul marino</option>
+                        <option value="Rojo">Rojo</option>
+                        <option value="Gris">Gris</option>
+                        <option value="Morado">Morado</option>
+                        <option value="Verde">Verde</option>
+                        <option value="Coral">Coral</option>
+                    </select>
+                    <span asp-validation-for="Solicitud.Color" class="text-danger"></span>
+                </div>
+                <!-- MATERIAL -->
+                <div class="form-group">
+                    <label asp-for="Solicitud.Material"></label>
+                    <select asp-for="Solicitud.Material" class="form-select">
+                        <option value="">-- Seleccione --</option>
+                        <option value="Dry Fit">Dry Fit</option>
+                        <option value="Poliéster">Poliéster</option>
+                        <option value="Algodón">Algodón</option>
+                        <option value="Algodón perchado">Algodón perchado</option>
+                        <option value="Lycra">Lycra</option>
+                        <option value="Taslan">Taslan</option>
+                    </select>
+                    <span asp-validation-for="Solicitud.Material" class="text-danger"></span>
+                </div>
+
+                <!-- ESTAMPADO -->
+
+                <div class="form-group">
+
+                    <label asp-for="Solicitud.TipoEstampado"></label>
+
+                    <select asp-for="Solicitud.TipoEstampado" class="form-select">
+                        <option value="">-- Seleccione --</option>
+                        <option value="Sublimación">Sublimación</option>
+                        <option value="Serigrafía">Serigrafía</option>
+                        <option value="Bordado">Bordado</option>
+                        <option value="Sin estampado">Sin estampado</option>
+                    </select>
+
+                    <span asp-validation-for="Solicitud.TipoEstampado"
+                          class="text-danger"></span>
+
+                </div>
+
+                <!-- TEXTO -->
+
+                <div class="form-group">
+
+                    <label asp-for="Solicitud.TextoPersonalizado"></label>
+
+                    <input asp-for="Solicitud.TextoPersonalizado"
+                           class="form-control-sport" />
+
+                </div>
+
+                <!-- OBSERVACIONES -->
+
+                <div class="form-group form-group-full">
+
+                    <label asp-for="Solicitud.Observaciones"></label>
+
+                    <textarea asp-for="Solicitud.Observaciones"
+                              rows="5"
+                              class="form-textarea-sport">
+
+                    </textarea>
+
+                </div>
+
+            </div>
+
+            <div class="form-actions">
+
+                <a asp-action="Index"
+                   class="button-secondary">
+
+                    Cancelar
+
+                </a>
+
+                <button class="button-submit">
+
+                    Registrar solicitud
+
+                </button>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
+
+@section Scripts {
+
+    <partial name="_ValidationScriptsPartial" />
+
+}

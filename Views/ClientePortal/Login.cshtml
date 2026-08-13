@@ -1,0 +1,84 @@
+﻿@model SportWear.Web.ViewModels.LoginClienteViewModel
+
+@{
+    ViewData["Title"] = "Iniciar sesión";
+    Layout = "_LayoutCliente";
+}
+
+@section Styles {
+    <link rel="stylesheet"
+          href="~/css/cliente-acceso.css"
+          asp-append-version="true" />
+}
+
+<section class="access-section">
+
+    <div class="access-card access-login">
+
+        <div class="access-heading">
+            <span>Mi cuenta</span>
+
+            <h1>Iniciar sesión</h1>
+
+            <p>
+                Ingresa para consultar tus solicitudes
+                y el estado de tus pedidos.
+            </p>
+        </div>
+
+        @if (TempData["MensajeExito"] != null)
+        {
+            <div class="success-message">
+                @TempData["MensajeExito"]
+            </div>
+        }
+
+        <form asp-action="Login"
+              method="post">
+
+            @Html.AntiForgeryToken()
+
+            <div asp-validation-summary="ModelOnly"
+                 class="validation-summary">
+            </div>
+
+            <div class="access-group">
+                <label asp-for="Correo">Correo</label>
+
+                <input asp-for="Correo"
+                       type="email" />
+
+                <span asp-validation-for="Correo"></span>
+            </div>
+
+            <div class="access-group">
+                <label asp-for="Clave">Contraseña</label>
+
+                <input asp-for="Clave"
+                       type="password" />
+
+                <span asp-validation-for="Clave"></span>
+            </div>
+
+            <button type="submit"
+                    class="access-button">
+                Iniciar sesión
+            </button>
+
+        </form>
+
+        <div class="access-footer">
+            ¿Todavía no tienes cuenta?
+
+            <a asp-action="Registro">
+                Regístrate
+            </a>
+        </div>
+
+    </div>
+
+</section>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

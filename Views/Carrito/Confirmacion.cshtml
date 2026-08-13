@@ -1,0 +1,47 @@
+﻿@model SportWear.Web.Models.Venta
+
+@{
+    ViewData["Title"] = "Compra registrada";
+    Layout = "_LayoutCliente";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/tienda.css" asp-append-version="true" />
+}
+
+<section class="shop-page">
+    <div class="purchase-success">
+        <div class="purchase-success-icon"><i class="bi bi-check-lg"></i></div>
+        <span>Pedido registrado</span>
+        <h1>¡Gracias por tu compra!</h1>
+        <p>Tu pedido <strong>@Model.Codigo</strong> fue registrado correctamente.</p>
+
+        <div class="purchase-summary">
+            <div><span>Total</span><strong>S/ @Model.Total.ToString("N2")</strong></div>
+            <div><span>Estado</span><strong>@Model.Estado</strong></div>
+            <div><span>Entrega</span><strong>@Model.Direccion</strong></div>
+        </div>
+
+        @if (Model.Detalles.Any())
+        {
+            <div class="purchase-detail-list">
+                <h2>Detalle de prendas</h2>
+                @foreach (var item in Model.Detalles)
+                {
+                    <div class="purchase-detail-row">
+                        <div>
+                            <strong>@item.NombreProducto</strong>
+                            <span>Talla @(string.IsNullOrWhiteSpace(item.Talla) ? "no registrada" : item.Talla) · Cantidad @item.Cantidad</span>
+                        </div>
+                        <strong>S/ @item.Subtotal.ToString("N2")</strong>
+                    </div>
+                }
+            </div>
+        }
+
+        <div class="purchase-actions">
+            <a asp-controller="ClientePortal" asp-action="MiCuenta" class="shop-button-primary">Ver mis pedidos</a>
+            <a asp-controller="Catalogo" asp-action="Index" class="shop-link-secondary">Volver al catálogo</a>
+        </div>
+    </div>
+</section>
