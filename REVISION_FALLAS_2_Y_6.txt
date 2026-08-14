@@ -1,0 +1,59 @@
+SPORTWEAR - CORRECCION DEFINITIVA DE LAS PRUEBAS 2 Y 6
+======================================================
+
+CAUSA REAL ENCONTRADA EN LA BASE DE DATOS ENTREGADA
+----------------------------------------------------
+La tabla Cliente tiene varios clientes, pero ClienteAcceso solamente tenia
+cuentas de portal para ClienteId 5 y ClienteId 10.
+
+Por eso el boton de llave no podia restablecer la contraseña de un cliente
+que solo existia en dbo.Cliente (por ejemplo, un cliente sin fila en
+ClienteAcceso).
+
+CORRECCION PRUEBA 2
+-------------------
+ADMIN -> Clientes -> llave
+
+Ahora la misma opcion hace lo siguiente:
+- Si el cliente YA tiene ClienteAcceso: restablece su contraseña.
+- Si el cliente NO tiene ClienteAcceso: crea su acceso al portal usando el
+  correo registrado y guarda la nueva contraseña.
+- Si el cliente no tiene correo: muestra un mensaje y obliga a registrar el
+  correo antes.
+- Solo el ADMINISTRADOR puede usar esta accion.
+
+CORRECCION PRUEBA 6
+-------------------
+Al desactivar un cliente:
+- sp_Cliente_Eliminar pone Cliente.Activo = 0.
+- Tambien pone ClienteAcceso.Activo = 0 si existe.
+- sp_Cliente_Actualizar mantiene sincronizados ambos estados al activar o
+  desactivar desde Editar.
+- El login considera INACTIVA la cuenta si Cliente o ClienteAcceso estan
+  inactivos. Esto evita que datos antiguos desincronizados permitan entrar.
+- Mi Cuenta y Cambiar contraseña tambien expulsan la sesion si el cliente fue
+  desactivado mientras estaba conectado.
+
+SQL A EJECUTAR
+--------------
+Ejecutar SOLO:
+SQL/07_Cierre_Clientes_Definitivo.sql
+
+El 07 reemplaza/actualiza los procedimientos necesarios. Si ya ejecutaste el
+06 no hay problema: el 07 lo deja en la version definitiva.
+
+PRUEBA EXACTA
+-------------
+1. Inicia como ADMINISTRADOR.
+2. En Clientes elige un cliente ACTIVO con correo.
+3. Pulsa la llave.
+4. Si no tenia acceso debe indicar que se creara la cuenta; coloca contraseña
+   y confirma.
+5. Cierra la sesion ADMIN y entra por el portal Cliente con el correo y esa
+   contraseña. Debe entrar.
+6. Cierra sesion Cliente.
+7. Vuelve como ADMIN y desactiva ese mismo cliente.
+8. Intenta Login Cliente otra vez.
+   Resultado esperado: "La cuenta se encuentra inactiva." y NO entra.
+9. Reactiva al cliente desde Editar.
+10. Vuelve a probar Login Cliente. Debe entrar con la misma contraseña.

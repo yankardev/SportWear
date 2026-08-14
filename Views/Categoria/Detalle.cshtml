@@ -1,7 +1,7 @@
-﻿@model SportWear.Web.Models.Cliente
+﻿@model SportWear.Web.Models.Categoria
 
 @{
-    ViewData["Title"] = "Detalle Cliente";
+    ViewData["Title"] = "Detalle categoría";
     Layout = "_LayoutAdmin";
 }
 
@@ -12,74 +12,37 @@
 <div class="detail-card">
     <div class="detail-header">
         <div>
-            <h2 class="detail-title">
-              @Model.Nombres @Model.Apellidos
-            </h2>
-            <p class="detail-subtitle">
-                Información del cliente
-            </p>
+            <h2 class="detail-title">@Model.Nombre</h2>
+            <p class="detail-subtitle">Información de la categoría</p>
         </div>
     </div>
 
     <div class="detail-body">
         <div class="detail-list">
             <div class="detail-item">
-                <span class="detail-label">
-                    Documento
-                </span>
-                <span class="detail-value">
-                    @Model.Documento
-                </span>
+                <span class="detail-label">ID</span>
+                <span class="detail-value">@Model.CategoriaId</span>
             </div>
+
             <div class="detail-item">
-                <span class="detail-label">
-                    Teléfono
-                </span>
-                <span class="detail-value">
-                    @Model.Telefono
-                </span>
+                <span class="detail-label">Estado</span>
+                <span class="detail-value">@(Model.Activo ? "Activo" : "Inactivo")</span>
             </div>
-            <div class="detail-item">
-                <span class="detail-label">
-                    Correo
-                </span>
-                <span class="detail-value">
-                    @Model.Correo
-                </span>
-            </div>
-            <div class="detail-item">
-                <span class="detail-label">
-                    Estado
-                </span>
-                <span class="detail-value">
-                    @(Model.Activo ? "Activo" : "Inactivo")
-                </span>
-            </div>
+
             <div class="detail-item detail-item-full">
-                <span class="detail-label">
-                    Dirección
-                </span>
-                <span class="detail-value">
-                    @Model.Direccion
-                </span>
+                <span class="detail-label">Descripción</span>
+                <span class="detail-value">@(string.IsNullOrWhiteSpace(Model.Descripcion) ? "Sin descripción" : Model.Descripcion)</span>
             </div>
+
             <div class="detail-item">
-               <span class="detail-label">
-                    Fecha Registro
-                </span>
-                <span class="detail-value">
-                    @Model.FechaRegistro.ToString("dd/MM/yyyy HH:mm")
-                </span>
+                <span class="detail-label">Fecha de registro</span>
+                <span class="detail-value">@Model.FechaRegistro.ToString("dd/MM/yyyy HH:mm")</span>
             </div>
         </div>
     </div>
-    <div class="detail-actions">
-        <a asp-action="Index" class="button-secondary">
-            Volver
-        </a>
 
-        <a asp-action="Editar"  asp-route-id="@Model.ClienteId"  class="button-submit">
-            Editar
-        </a>
+    <div class="detail-actions">
+        <a asp-action="Index" class="button-secondary">Volver</a>
+        <a asp-action="Editar" asp-route-id="@Model.CategoriaId" class="button-submit">Editar</a>
     </div>
 </div>

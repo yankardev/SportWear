@@ -1,32 +1,30 @@
 ﻿@model SportWear.Web.Models.Cliente
 
 @{
-    ViewData["Title"] = "Registrar Cliente";
+    ViewData["Title"] = "Editar cliente";
     Layout = "_LayoutAdmin";
 }
 
 @section Styles {
-    <link rel="stylesheet" href="~/css/admin-crud.css"  asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/admin-crud.css" asp-append-version="true" />
 }
 
 <div class="form-card">
     <div class="form-card-header">
-        <h2 class="form-card-title">
-            Registrar Cliente
-        </h2>
+        <h2 class="form-card-title">Editar cliente</h2>
         <p class="form-card-description">
-            Registre un nuevo cliente del sistema.
+            Actualiza los datos y el estado del cliente.
         </p>
-
     </div>
 
     <div class="form-card-body">
-
-        <form asp-action="Registrar" method="post">
+        <form asp-action="Editar" method="post">
             @Html.AntiForgeryToken()
+
             <input asp-for="ClienteId" type="hidden" />
-            <div asp-validation-summary="ModelOnly"
-                 class="text-danger mb-3"></div>
+
+            <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
             <div class="form-grid">
                 <div class="form-group">
                     <label asp-for="Nombres" class="form-label"></label>
@@ -49,49 +47,35 @@
                 <div class="form-group">
                     <label asp-for="Telefono" class="form-label"></label>
                     <input asp-for="Telefono" class="form-control-sport" />
+                    <span asp-validation-for="Telefono" class="form-validation"></span>
                 </div>
 
                 <div class="form-group">
                     <label asp-for="Correo" class="form-label"></label>
                     <input asp-for="Correo" class="form-control-sport" />
+                    <span asp-validation-for="Correo" class="form-validation"></span>
                 </div>
 
                 <div class="form-group">
                     <label asp-for="Direccion" class="form-label"></label>
                     <input asp-for="Direccion" class="form-control-sport" />
+                    <span asp-validation-for="Direccion" class="form-validation"></span>
                 </div>
-
             </div>
 
             <div class="form-group">
-
                 <div class="switch-group">
-
-                    <input asp-for="Activo"
-                           class="switch-input" />
-
+                    <input asp-for="Activo" class="switch-input" />
                     <div class="switch-content">
-
                         <strong>Activo</strong>
-
-                        <span>
-                            Cliente disponible en el sistema.
-                        </span>
-
+                        <span>Permite mantener al cliente habilitado en el sistema.</span>
                     </div>
-
                 </div>
-
             </div>
 
             <div class="form-actions">
-                <a asp-action="Index"  class="button-secondary">
-                    Cancelar
-                </a>
-
-                <button type="submit" class="button-submit">
-                    Guardar cambios
-                </button>
+                <a asp-action="Index" class="button-secondary">Cancelar</a>
+                <button type="submit" class="button-submit">Guardar cambios</button>
             </div>
         </form>
     </div>

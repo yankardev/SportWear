@@ -33,6 +33,13 @@
             </div>
         }
 
+        @if (TempData["MensajeError"] != null)
+        {
+            <div class="validation-summary" style="margin-bottom:20px; text-align:center;">
+                @TempData["MensajeError"]
+            </div>
+        }
+
         <form asp-action="Login"
               method="post">
 

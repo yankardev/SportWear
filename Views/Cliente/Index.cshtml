@@ -7,6 +7,12 @@
     string? buscar = ViewBag.Buscar as string;
     int pagina = ViewBag.Pagina ?? 1;
     int totalPaginas = ViewBag.TotalPaginas ?? 1;
+    bool esAdministrador =
+        string.Equals(
+            Context.Session.GetString("Rol"),
+            "ADMINISTRADOR",
+            StringComparison.OrdinalIgnoreCase
+        );
 }
 
 @section Styles {
@@ -153,6 +159,17 @@
                                     <i class="bi bi-pencil-fill"></i>
 
                                 </a>
+                                @if (esAdministrador && !string.IsNullOrWhiteSpace(item.Correo))
+                                {
+                                    <a asp-action="CambiarClave"
+                                       asp-route-id="@item.ClienteId"
+                                       class="action-button action-details"
+                                       title="Crear o restablecer acceso">
+
+                                        <i class="bi bi-key-fill"></i>
+
+                                    </a>
+                                }
 
                                 <form asp-action="Eliminar"
                                       asp-route-id="@item.ClienteId"

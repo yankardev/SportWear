@@ -1,0 +1,64 @@
+SPORTWEAR - REVISION DE CIERRE
+==============================
+
+HALLAZGOS REALES EN EL ZIP RECIBIDO
+-----------------------------------
+1. Views/Cliente/Editar.cshtml estaba enviando el formulario a Registrar.
+   Ese era el motivo de que al editar/reactivar se ejecutara un INSERT y
+   apareciera el error de documento duplicado.
+
+2. El cambio/restablecimiento de contraseña desde Administración ya estaba
+   casi completo: interfaz, repositorio, controlador, ViewModel y vista.
+
+3. La base SQL enviada ya contiene:
+   - sp_ClienteAcceso_CambiarClave
+   - sp_ClienteAcceso_ObtenerPorClienteId
+
+4. Faltaba el cambio de contraseña realizado por el propio cliente desde
+   Mi Cuenta. Se agregó con validación de contraseña actual.
+
+5. Views/Categoria/Detalle.cshtml tenía el modelo Cliente por error.
+   Se corrigió para usar Categoria.
+
+6. Registrar cliente no manejaba amigablemente un documento activo duplicado.
+   Se agregó manejo de SqlException 2601/2627.
+
+7. Al desactivar un Cliente, ClienteAcceso podía continuar activo.
+   SQL/06_Cierre_Clientes_Seguridad.sql sincroniza ambos estados.
+
+8. Había credenciales antiguas visibles en README, SQL/README_SQL.txt y
+   Views/Auth/Login.cshtml. Se retiraron del código visible.
+
+PASO SQL PARA TU BASE ACTUAL
+----------------------------
+Ejecutar solamente:
+SQL/06_Cierre_Clientes_Seguridad.sql
+
+PRUEBAS FINALES
+---------------
+1. ADMIN -> Clientes -> Editar -> cambiar datos -> Guardar.
+   Debe actualizar, NO registrar un cliente nuevo.
+
+2. ADMIN -> Clientes -> llave -> cambiar contraseña de un cliente con acceso.
+   Debe guardar correctamente.
+
+3. CLIENTE -> Mi Cuenta -> Cambiar contraseña.
+   - clave actual incorrecta: debe mostrar validación.
+   - nueva igual a la actual: debe rechazarla.
+   - nueva válida: debe guardar, cerrar sesión y volver al Login.
+   - clave antigua: no debe ingresar.
+   - clave nueva: debe ingresar.
+
+4. ADMIN -> desactivar un cliente con acceso.
+   Ese cliente ya no debe poder iniciar sesión en el portal.
+
+5. ADMIN -> reactivar el mismo cliente.
+   Debe volver a poder iniciar sesión con su contraseña vigente.
+
+6. Categorías -> Detalle (si se accede por ruta o se agrega botón).
+   Debe mostrar datos de Categoria y no de Cliente.
+
+NOTA DE SEGURIDAD
+-----------------
+Antes de publicar en Azure/GitHub, cambia cualquier contraseña que haya sido
+mostrada anteriormente en capturas o texto. No publiques contraseñas nuevas.

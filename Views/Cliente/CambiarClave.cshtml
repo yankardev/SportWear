@@ -1,0 +1,81 @@
+﻿@model SportWear.Web.ViewModels.CambiarClaveClienteViewModel
+
+@{
+    ViewData["Title"] = Model.TieneAcceso
+        ? "Restablecer contraseña"
+        : "Crear acceso del cliente";
+
+    Layout = "_LayoutAdmin";
+}
+
+@section Styles {
+    <link rel="stylesheet"
+          href="~/css/admin-crud.css"
+          asp-append-version="true" />
+}
+
+<div class="form-card">
+
+    <div class="form-card-header">
+        <h2 class="form-card-title">
+            @(Model.TieneAcceso ? "Restablecer contraseña" : "Crear acceso al portal")
+        </h2>
+
+        <p class="form-card-description">
+            Cliente: <strong>@Model.NombreCliente</strong><br />
+            Correo: <strong>@Model.Correo</strong>
+        </p>
+    </div>
+
+    <div class="form-card-body">
+
+        @if (!Model.TieneAcceso)
+        {
+            <div class="alert alert-info mb-3">
+                Este cliente todavía no tiene acceso al portal.
+                Al guardar se creará su cuenta usando el correo registrado.
+            </div>
+        }
+
+        <form asp-action="CambiarClave" method="post">
+
+            @Html.AntiForgeryToken()
+
+            <input asp-for="ClienteId" type="hidden" />
+            <input asp-for="NombreCliente" type="hidden" />
+            <input asp-for="Correo" type="hidden" />
+            <input asp-for="TieneAcceso" type="hidden" />
+
+            <div asp-validation-summary="ModelOnly"
+                 class="form-validation">
+            </div>
+
+            <div class="form-group">
+                <label asp-for="NuevaClave" class="form-label"></label>
+                <input asp-for="NuevaClave" class="form-control-sport" autocomplete="new-password" />
+                <span asp-validation-for="NuevaClave" class="form-validation"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="ConfirmarClave" class="form-label"></label>
+                <input asp-for="ConfirmarClave" class="form-control-sport" autocomplete="new-password" />
+                <span asp-validation-for="ConfirmarClave" class="form-validation"></span>
+            </div>
+
+            <div class="form-actions">
+                <a asp-action="Index" class="button-secondary">Cancelar</a>
+
+                <button type="submit" class="button-submit">
+                    <i class="bi bi-key-fill"></i>
+                    @(Model.TieneAcceso ? "Restablecer contraseña" : "Crear acceso")
+                </button>
+            </div>
+
+        </form>
+
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

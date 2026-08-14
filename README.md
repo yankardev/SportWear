@@ -27,6 +27,7 @@ Aplicación web en **ASP.NET Core MVC (.NET 8)** para dos líneas de negocio:
 - Favoritos.
 - Mi cuenta con compras de tienda, solicitudes, proformas y pedidos personalizados.
 - Registro e inicio de sesión mediante `Cliente` + `ClienteAcceso`.
+- Cambio de contraseña desde Mi Cuenta con validación de la contraseña actual.
 
 ## Administración
 
@@ -79,8 +80,8 @@ Producto personalizable
 
 Consulta `SQL/README_SQL.txt`.
 
-- Base nueva: ejecutar `SQL/01_SportWearDB_Completa.sql`.
-- Base existente del proyecto: ejecutar `SQL/03_VentaDirecta_Carrito_Favoritos.sql`.
+- Base nueva: ejecutar `SQL/01_SportWearDB_Completa.sql`, luego `SQL/04_Productos_Catalogo_Imagenes.sql`, `SQL/05_Tallas_VentaDirecta_Final.sql` y `SQL/06_Cierre_Clientes_Seguridad.sql`.
+- Base existente que ya tiene venta directa: ejecutar `SQL/06_Cierre_Clientes_Seguridad.sql` para aplicar los ajustes finales de clientes y seguridad.
 
 ## Cadena local incluida
 
@@ -90,11 +91,8 @@ Server=localhost;Database=SportWearDB;Trusted_Connection=True;TrustServerCertifi
 
 Adáptala en `appsettings.json` si tu instancia de SQL Server tiene otro nombre.
 
-## Credenciales demo
+## Acceso de demostración
 
-| Perfil | Correo | Contraseña |
-|---|---|---|
-| Administrador | admin@sportwear.com | Admin123* |
-| Ventas | JENNYFER.CHAVEZ@SPORTWEAR.COM | 123456 |
-| Producción | FABIO.CADENAS@SPORTWEAR.COM | 123456 |
-| Cliente | renzo.morales@sportwear.com | Cliente123* |
+El sistema incluye perfiles de Administrador, Ventas, Producción y Cliente.
+
+Por seguridad, las credenciales de acceso no se almacenan públicamente en este repositorio.

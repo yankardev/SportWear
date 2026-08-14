@@ -1,0 +1,68 @@
+﻿@model SportWear.Web.ViewModels.CambiarClaveClientePortalViewModel
+
+@{
+    ViewData["Title"] = "Cambiar contraseña";
+    Layout = "_LayoutCliente";
+}
+
+@section Styles {
+    <link rel="stylesheet"
+          href="~/css/cliente-acceso.css"
+          asp-append-version="true" />
+}
+
+<section class="access-section">
+    <div class="access-card access-login">
+        <div class="access-heading">
+            <span>Seguridad de tu cuenta</span>
+            <h1>Cambiar contraseña</h1>
+            <p>
+                Confirma tu contraseña actual y registra una nueva.
+            </p>
+        </div>
+
+        <form asp-controller="ClientePortal"
+              asp-action="CambiarClave"
+              method="post">
+
+            @Html.AntiForgeryToken()
+
+            <div asp-validation-summary="ModelOnly"
+                 class="validation-summary"></div>
+
+            <div class="access-group">
+                <label asp-for="ClaveActual"></label>
+                <input asp-for="ClaveActual" autocomplete="current-password" />
+                <span asp-validation-for="ClaveActual"></span>
+            </div>
+
+            <div class="access-group">
+                <label asp-for="NuevaClave"></label>
+                <input asp-for="NuevaClave" autocomplete="new-password" />
+                <span asp-validation-for="NuevaClave"></span>
+            </div>
+
+            <div class="access-group">
+                <label asp-for="ConfirmarClave"></label>
+                <input asp-for="ConfirmarClave" autocomplete="new-password" />
+                <span asp-validation-for="ConfirmarClave"></span>
+            </div>
+
+            <button type="submit" class="access-button">
+                <i class="bi bi-shield-lock"></i>
+                Actualizar contraseña
+            </button>
+        </form>
+
+        <div class="access-footer">
+            <a asp-controller="ClientePortal" asp-action="MiCuenta">
+                <i class="bi bi-arrow-left"></i>
+                Volver a Mi Cuenta
+            </a>
+        </div>
+    </div>
+</section>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

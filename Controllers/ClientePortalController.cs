@@ -57,6 +57,7 @@ public class ClientePortalController : Controller
         }
         var cliente = _clienteRepositorio.ObtenerPorDocumento(modelo.Documento);
         int clienteId;
+
         if (cliente == null)
         {
             var nuevoCliente = new Cliente
@@ -70,10 +71,34 @@ public class ClientePortalController : Controller
                 Activo = true
             };
 
-            clienteId = _clienteRepositorio.Insertar(nuevoCliente);
+            try
+            {
+                clienteId = _clienteRepositorio.Insertar(nuevoCliente);
+            }
+            catch (SqlException ex) when (ex.Number == 2601 || ex.Number == 2627)
+            {
+                ModelState.AddModelError(nameof(modelo.Documento),
+                    "Ya existe un cliente activo con este documento.");
+                return View(modelo);
+            }
         }
         else
         {
+            if (!cliente.Activo)
+            {
+                ModelState.AddModelError(nameof(modelo.Documento),
+                    "Este documento pertenece a un cliente inactivo. Solicita su reactivación.");
+                return View(modelo);
+            }
+
+            var accesoDelCliente = _accesoRepositorio.ObtenerPorClienteId(cliente.ClienteId);
+            if (accesoDelCliente != null)
+            {
+                ModelState.AddModelError(nameof(modelo.Documento),
+                    "Este documento ya tiene una cuenta registrada.");
+                return View(modelo);
+            }
+
             clienteId = cliente.ClienteId;
         }
 
@@ -85,7 +110,16 @@ public class ClientePortalController : Controller
             Activo = true
         };
 
-        _accesoRepositorio.Insertar(nuevoAcceso);
+        try
+        {
+            _accesoRepositorio.Insertar(nuevoAcceso);
+        }
+        catch (SqlException ex)
+        {
+            ModelState.AddModelError(string.Empty, ex.Message);
+            return View(modelo);
+        }
+
         TempData["MensajeExito"] = "Tu cuenta fue creada correctamente.";
         return RedirectToAction(nameof(Login));
     }
@@ -158,11 +192,12 @@ public class ClientePortalController : Controller
                 clienteId.Value
             );
 
-        if (cliente == null)
+        if (cliente == null || !cliente.Activo)
         {
-            HttpContext.Session.Remove(
-                "ClienteId"
-            );
+            HttpContext.Session.Clear();
+
+            TempData["MensajeError"] =
+                "Tu cuenta se encuentra inactiva.";
 
             return RedirectToAction(
                 nameof(Login)
@@ -378,6 +413,90 @@ public class ClientePortalController : Controller
             modelo.Total = cotizacion.Total;
             return View(modelo);
         }
+    }
+
+    [HttpGet]
+    public IActionResult CambiarClave()
+    {
+        int? clienteId = HttpContext.Session.GetInt32("ClienteId");
+
+        if (clienteId is null)
+            return RedirectToAction(nameof(Login));
+
+        var cliente = _clienteRepositorio.ObtenerPorId(clienteId.Value);
+
+        if (cliente == null || !cliente.Activo)
+        {
+            HttpContext.Session.Clear();
+            TempData["MensajeError"] = "Tu cuenta se encuentra inactiva.";
+            return RedirectToAction(nameof(Login));
+        }
+
+        return View(new CambiarClaveClientePortalViewModel());
+    }
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public IActionResult CambiarClave(CambiarClaveClientePortalViewModel modelo)
+    {
+        int? clienteId = HttpContext.Session.GetInt32("ClienteId");
+
+        if (clienteId is null)
+            return RedirectToAction(nameof(Login));
+
+        var cliente = _clienteRepositorio.ObtenerPorId(clienteId.Value);
+
+        if (cliente == null || !cliente.Activo)
+        {
+            HttpContext.Session.Clear();
+            TempData["MensajeError"] = "Tu cuenta se encuentra inactiva.";
+            return RedirectToAction(nameof(Login));
+        }
+
+        if (!ModelState.IsValid)
+            return View(modelo);
+
+        var acceso = _accesoRepositorio.ObtenerPorClienteId(clienteId.Value);
+
+        if (acceso == null || !acceso.Activo)
+        {
+            HttpContext.Session.Clear();
+            return RedirectToAction(nameof(Login));
+        }
+
+        string hashActual = GenerarHash(modelo.ClaveActual);
+
+        if (!string.Equals(hashActual, acceso.ClaveHash, StringComparison.OrdinalIgnoreCase))
+        {
+            ModelState.AddModelError(nameof(modelo.ClaveActual),
+                "La contraseña actual no es correcta.");
+            return View(modelo);
+        }
+
+        string nuevoHash = GenerarHash(modelo.NuevaClave);
+
+        if (string.Equals(nuevoHash, acceso.ClaveHash, StringComparison.OrdinalIgnoreCase))
+        {
+            ModelState.AddModelError(nameof(modelo.NuevaClave),
+                "La nueva contraseña debe ser diferente a la actual.");
+            return View(modelo);
+        }
+
+        try
+        {
+            _accesoRepositorio.CambiarClave(clienteId.Value, nuevoHash);
+        }
+        catch (SqlException ex)
+        {
+            ModelState.AddModelError(string.Empty, ex.Message);
+            return View(modelo);
+        }
+
+        HttpContext.Session.Clear();
+        TempData["MensajeExito"] =
+            "Tu contraseña fue actualizada correctamente. Inicia sesión nuevamente.";
+
+        return RedirectToAction(nameof(Login));
     }
 
     [HttpPost]
