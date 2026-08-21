@@ -1,55 +1,53 @@
 # SportWear
 
-Aplicación web en **ASP.NET Core MVC (.NET 8)** para dos líneas de negocio:
-
-1. **Venta directa de ropa deportiva** con precio fijo, stock, carrito, favoritos y seguimiento de compras.
-2. **Confección personalizada** con solicitud, cotización, PDF y pedido por etapas.
+Aplicación web desarrollada en **ASP.NET Core MVC (.NET 8)** para la venta de ropa deportiva y la gestión de confecciones personalizadas.
 
 ## Tecnologías
 
-- ASP.NET Core MVC
+- ASP.NET Core MVC (.NET 8)
 - ADO.NET
 - SQL Server
 - Procedimientos almacenados
 - Web API REST
 - JavaScript, AJAX y JSON
-- Session para carrito temporal
+- Session
 - QuestPDF
 - CSS y Bootstrap Icons
 
-## Portal cliente
+## Funcionalidades principales
 
-- Inicio y catálogo de venta directa (`Personalizable = 0`).
-- Catálogo de productos personalizados (`Personalizable = 1`).
-- Carrito de compras con actualización de cantidades.
-- Validación de stock.
-- Confirmación de compra y descuento transaccional de stock.
+### Portal del cliente
+
+- Catálogo de productos de venta directa.
+- Catálogo de productos personalizables.
+- Carrito de compras y validación de stock.
 - Favoritos.
-- Mi cuenta con compras de tienda, solicitudes, proformas y pedidos personalizados.
 - Registro e inicio de sesión mediante `Cliente` + `ClienteAcceso`.
-- Cambio de contraseña desde Mi Cuenta con validación de la contraseña actual.
+- Compras y seguimiento de pedidos.
+- Solicitudes de confección personalizada.
+- Cotizaciones y proformas PDF.
+- Cambio de contraseña desde Mi Cuenta.
 
-## Administración
+### Administración
 
-- Productos con stock para venta directa.
-- Categorías.
-- Clientes.
-- Solicitudes de confección.
-- Cotizaciones + PDF.
-- Pedidos personalizados por etapas.
-- Ventas directas y actualización de su estado.
-- Usuarios internos por perfil.
 - Dashboard y reportes.
+- CRUD de categorías, productos y clientes.
+- Gestión de stock.
+- Gestión de solicitudes de confección.
+- Cotizaciones y generación de PDF.
+- Pedidos personalizados por etapas.
+- Ventas directas y actualización de estado.
+- Usuarios internos y perfiles.
 
 ## Perfiles internos
 
 - **ADMINISTRADOR:** acceso completo.
-- **VENTAS:** productos, clientes, solicitudes, cotizaciones, pedidos y ventas directas.
+- **VENTAS:** productos, clientes, solicitudes, cotizaciones, pedidos y ventas.
 - **PRODUCCION:** solicitudes de confección y pedidos personalizados.
 
-Los clientes no se crean desde el mantenimiento de Usuario. Utilizan `ClientePortal`.
+Los clientes utilizan un acceso independiente mediante `ClientePortal`.
 
-## Flujos
+## Flujos principales
 
 ### Venta directa
 
@@ -57,7 +55,7 @@ Los clientes no se crean desde el mantenimiento de Usuario. Utilizan `ClientePor
 Producto no personalizable
 -> Catálogo
 -> Carrito
--> Login cliente (si aún no inició sesión)
+-> Login cliente
 -> Confirmar compra
 -> Validar stock
 -> Venta + VentaDetalle
@@ -78,21 +76,39 @@ Producto personalizable
 
 ## Base de datos
 
-Consulta `SQL/README_SQL.txt`.
+Los scripts se encuentran en la carpeta `SQL`.
 
-- Base nueva: ejecutar `SQL/01_SportWearDB_Completa.sql`, luego `SQL/04_Productos_Catalogo_Imagenes.sql`, `SQL/05_Tallas_VentaDirecta_Final.sql` y `SQL/06_Cierre_Clientes_Seguridad.sql`.
-- Base existente que ya tiene venta directa: ejecutar `SQL/06_Cierre_Clientes_Seguridad.sql` para aplicar los ajustes finales de clientes y seguridad.
+Para una instalación nueva ejecutar, en este orden:
 
-## Cadena local incluida
+1. `SQL/01_SportWearDB_Completa.sql`
+2. `SQL/04_Productos_Catalogo_Imagenes.sql`
+3. `SQL/05_Tallas_VentaDirecta_Final.sql`
+4. `SQL/06_Cierre_Clientes_Seguridad.sql`
+5. `SQL/07_Cierre_Clientes_Definitivo.sql`
+
+Consulta `SQL/README_SQL.txt` para más detalles.
+
+## Configuración de conexión
+
+En desarrollo local la aplicación utiliza la cadena `SportWearDB` definida en `appsettings.json`.
 
 ```text
 Server=localhost;Database=SportWearDB;Trusted_Connection=True;TrustServerCertificate=True;
 ```
 
-Adáptala en `appsettings.json` si tu instancia de SQL Server tiene otro nombre.
+En producción la cadena debe configurarse como variable/cadena de conexión del proveedor de hosting. No se deben guardar contraseñas de producción en el repositorio.
 
-## Acceso de demostración
+## Ejecución local
 
-El sistema incluye perfiles de Administrador, Ventas, Producción y Cliente.
+```bash
+dotnet restore
+dotnet run --project SportWear.Web.csproj
+```
 
-Por seguridad, las credenciales de acceso no se almacenan públicamente en este repositorio.
+## Despliegue
+
+El repositorio incluye un workflow de GitHub Actions en `.github/workflows` para publicar la aplicación ASP.NET Core.
+
+## Seguridad
+
+Las contraseñas se almacenan como hash y las credenciales reales de acceso no se publican en este repositorio.
