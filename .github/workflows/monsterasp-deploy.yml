@@ -26,7 +26,7 @@ jobs:
         run: dotnet build SportWear.Web.csproj --configuration Release --no-restore
 
       - name: Publish
-        run: dotnet publish SportWear.Web.csproj --configuration Release --output ./publish --runtime win-x86 --no-build
+        run: dotnet publish SportWear.Web.csproj --configuration Release --framework net8.0 --output ./publish --runtime win-x86 --self-contained false -p:PublishTrimmed=false -p:PublishSingleFile=false
 
       - name: Deploy to MonsterASP.NET via WebDeploy
         uses: rasmusbuchholdt/simply-web-deploy@2.1.0
@@ -35,4 +35,4 @@ jobs:
           server-computer-name: ${{ secrets.SERVER_COMPUTER_NAME }}
           server-username: ${{ secrets.SERVER_USERNAME }}
           server-password: ${{ secrets.SERVER_PASSWORD }}
-          package: ./publish
+          source-path: '\publish\'
